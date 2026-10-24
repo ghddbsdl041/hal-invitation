@@ -35,23 +35,20 @@ export default function Letter({ nickname, focusTitle = true, side, children }: 
 
   return (
     <section className={styles.scene}>
+      {/* 좁은 화면: 종이 한 장(.paper). 넓은 화면: 본문은 가로 편지지, 안내·메뉴·회신은 아래 두 번째 종이(.sheet) */}
       <article className={styles.paper}>
-        <Image src="/assets/streetlight.png" alt="" width={346} height={721} className={styles.lamp} />
-        <Image src="/assets/maple.png" alt="" width={479} height={521} className={styles.maple} />
-        <Image src="/assets/pumpkin.png" alt="" width={500} height={500} className={styles.clipping} />
-        <Image src="/assets/candlelight.png" alt="" width={375} height={666} className={styles.candle} />
-        <Image src="/assets/sticker.png" alt="" width={344} height={376} className={styles.stamp} />
+        <div className={`${styles.sheet} ${styles.letterSheet}`}>
+          <Image src="/assets/streetlight.png" alt="" width={346} height={721} className={styles.lamp} />
+          <Image src="/assets/maple.png" alt="" width={479} height={521} className={styles.maple} />
+          <Image src="/assets/pumpkin.png" alt="" width={500} height={500} className={styles.clipping} />
+          <Image src="/assets/candlelight.png" alt="" width={375} height={666} className={styles.candle} />
+          <Image src="/assets/sticker.png" alt="" width={344} height={376} className={styles.stamp} />
 
-        {/* 봉투에서 넘어왔을 때 스크린리더·키보드 포커스를 편지 시작점으로 */}
-        <h1
-          className={styles.title}
-          tabIndex={-1}
-          ref={titleRef}
-        >
-          이 계절의 만찬에 귀하를 초대합니다.
-        </h1>
-        <div className={styles.columns}>
-          <div className={styles.body} style={{ gridArea: "body" }}>
+          {/* 봉투에서 넘어왔을 때 스크린리더·키보드 포커스를 편지 시작점으로 */}
+          <h1 className={styles.title} tabIndex={-1} ref={titleRef}>
+            이 계절의 만찬에 귀하를 초대합니다.
+          </h1>
+          <div className={styles.body}>
             <p>존경하는 {nickname}님께.</p>
             {PARAGRAPHS.map((text) => (
               <p key={text}>{text}</p>
@@ -59,9 +56,13 @@ export default function Letter({ nickname, focusTitle = true, side, children }: 
             <p className={styles.closing}>귀하의 답신을 기다리며,</p>
             <p className={styles.sign}>만찬 주최자 올림</p>
           </div>
-          {side && <div className={styles.side}>{side}</div>}
-          {children && <div className={styles.reply}>{children}</div>}
         </div>
+        {(side || children) && (
+          <div className={`${styles.sheet} ${styles.replySheet}`}>
+            {side}
+            {children}
+          </div>
+        )}
       </article>
     </section>
   );

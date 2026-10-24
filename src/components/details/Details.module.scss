@@ -122,6 +122,12 @@
   flex-direction: column;
   gap: 8px;
   list-style: none;
+
+  // 넓은 화면(가로 둘째 종이)에서는 카드 2개씩
+  @media (min-width: 1280px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 // 칸이 좁으면(2단 편지지의 오른쪽 단 등) 투표 영역이 설명 아래로 내려감

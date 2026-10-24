@@ -45,7 +45,7 @@
 
   // 마우스 환경에서만 불참 버튼이 피해 다닐 공간 확보
   @media (hover: hover) and (pointer: fine) {
-    min-height: 160px;
+    min-height: 120px;
   }
 }
 
