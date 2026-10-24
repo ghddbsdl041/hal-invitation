@@ -36,7 +36,9 @@ export async function loadPublic() {
 }
 
 export async function loadMine() {
-  await ensureSession();
+  // 처음 온 손님은 세션이 없으니 불러올 것도 없음. 익명 로그인은 실제로 응답할 때만 (IP당 시간 한도가 있음)
+  const { data } = await supabase().auth.getSession();
+  if (!data.session) return { response: null, vote: null };
   const [response, vote] = await Promise.all([
     supabase().from("responses").select("nickname, attendance_status, arrival_time, ticket_no").maybeSingle(),
     supabase().from("food_votes").select("candidate_id").maybeSingle(),

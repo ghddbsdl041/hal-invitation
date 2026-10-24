@@ -42,7 +42,10 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
 
   useEffect(() => {
     if (phase !== "dodging" && phase !== "waiting") return;
-    const t = setTimeout(() => setPhase("armed"), phase === "dodging" ? DODGE_MS : TOUCH_WAIT_MS);
+    const t = setTimeout(() => {
+      setPhase("armed");
+      setOffset({ x: 0, y: 0 }); // 장난이 끝나면 제자리로
+    }, phase === "dodging" ? DODGE_MS : TOUCH_WAIT_MS);
     return () => clearTimeout(t);
   }, [phase]);
 

@@ -124,8 +124,10 @@
   list-style: none;
 }
 
+// 칸이 좁으면(2단 편지지의 오른쪽 단 등) 투표 영역이 설명 아래로 내려감
 .candidate {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -142,6 +144,7 @@
 
 .candidateText {
   display: flex;
+  flex: 1 1 150px;
   flex-direction: column;
   min-width: 0;
   font-size: 16px;
@@ -151,6 +154,7 @@
 .voteBox {
   display: flex;
   flex-shrink: 0;
+  margin-left: auto;
   align-items: center;
   gap: 10px;
 }

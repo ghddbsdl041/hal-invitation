@@ -90,41 +90,46 @@ export default function Invitation() {
   const attending = response?.attendance_status === "attending";
 
   return (
-    <Letter nickname={nickname} focusTitle={focus === "top"}>
-      {pub ? (
-        <>
-          <EventInfo settings={pub.settings} />
-          <FoodBoard
-            categories={pub.categories}
-            counts={pub.counts}
-            myVote={attending ? vote : null}
-            attending={attending}
-            deadline={pub.settings.voting_deadline}
-            scrollIntoView={focus === "food"}
-            justAttended={justAttended}
-            onTicket={() => go("ticket")}
-            onVote={async (id) => {
-              await castVote(id);
-              setVote(id);
-              refreshPublic();
-            }}
-            onCancel={async () => {
-              await cancelVote();
-              setVote(null);
-              refreshPublic();
-            }}
-          />
-        </>
-      ) : (
-        <p className={styles.status} role={pubError ? "alert" : "status"}>
-          {pubError ? "행사 정보를 불러오지 못했습니다. " : "행사 정보를 불러오는 중…"}
-          {pubError && (
-            <button type="button" className={styles.retry} onClick={refreshPublic}>
-              다시 시도
-            </button>
-          )}
-        </p>
-      )}
+    <Letter
+      nickname={nickname}
+      focusTitle={focus === "top"}
+      side={
+        pub ? (
+          <>
+            <EventInfo settings={pub.settings} />
+            <FoodBoard
+              categories={pub.categories}
+              counts={pub.counts}
+              myVote={attending ? vote : null}
+              attending={attending}
+              deadline={pub.settings.voting_deadline}
+              scrollIntoView={focus === "food"}
+              justAttended={justAttended}
+              onTicket={() => go("ticket")}
+              onVote={async (id) => {
+                await castVote(id);
+                setVote(id);
+                refreshPublic();
+              }}
+              onCancel={async () => {
+                await cancelVote();
+                setVote(null);
+                refreshPublic();
+              }}
+            />
+          </>
+        ) : (
+          <p className={styles.status} role={pubError ? "alert" : "status"}>
+            {pubError ? "행사 정보를 불러오지 못했습니다. " : "행사 정보를 불러오는 중…"}
+            {pubError && (
+              <button type="button" className={styles.retry} onClick={refreshPublic}>
+                다시 시도
+              </button>
+            )}
+          </p>
+        )
+      }
+    >
       <Rsvp
         saved={response}
         scrollIntoView={focus === "rsvp"}

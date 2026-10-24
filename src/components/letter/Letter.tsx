@@ -19,10 +19,13 @@ type Props = {
   nickname: string;
   // 응답 수정으로 돌아올 때는 제목 대신 응답 영역으로 포커스를 보냄
   focusTitle?: boolean;
+  // 넓은 화면에서 오른쪽 단 (만찬 안내·메뉴)
+  side?: ReactNode;
+  // 본문 아래 (회신)
   children?: ReactNode;
 };
 
-export default function Letter({ nickname, focusTitle = true, children }: Props) {
+export default function Letter({ nickname, focusTitle = true, side, children }: Props) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   // 마운트 때 한 번만 (ref 콜백으로 하면 투표 등으로 다시 그릴 때마다 포커스를 빼앗음)
   useEffect(() => {
@@ -47,15 +50,18 @@ export default function Letter({ nickname, focusTitle = true, children }: Props)
         >
           이 계절의 만찬에 귀하를 초대합니다.
         </h1>
-        <div className={styles.body}>
-          <p>존경하는 {nickname}님께.</p>
-          {PARAGRAPHS.map((text) => (
-            <p key={text}>{text}</p>
-          ))}
-          <p className={styles.closing}>귀하의 답신을 기다리며,</p>
-          <p className={styles.sign}>만찬 주최자 올림</p>
+        <div className={styles.columns}>
+          <div className={styles.body} style={{ gridArea: "body" }}>
+            <p>존경하는 {nickname}님께.</p>
+            {PARAGRAPHS.map((text) => (
+              <p key={text}>{text}</p>
+            ))}
+            <p className={styles.closing}>귀하의 답신을 기다리며,</p>
+            <p className={styles.sign}>만찬 주최자 올림</p>
+          </div>
+          {side && <div className={styles.side}>{side}</div>}
+          {children && <div className={styles.reply}>{children}</div>}
         </div>
-        {children}
       </article>
     </section>
   );

@@ -31,6 +31,45 @@
     width: min(720px, 100% - 340px);
     padding: 64px 72px 80px;
   }
+
+  // 넓은 화면: letter-wrapper.png처럼 가로로 넓은 편지지 (본문 | 안내·메뉴·회신 2단)
+  @media (min-width: 1280px) {
+    width: min(1180px, 100% - 340px);
+  }
+}
+
+// 좁은 화면은 문서 순서(본문 → 안내·메뉴 → 회신), 넓은 화면은 왼쪽 본문·회신 | 오른쪽 안내·메뉴
+.columns {
+  @media (min-width: 1280px) {
+    display: grid;
+    grid-template-areas:
+      "body side"
+      "reply side";
+    grid-template-columns: 1.1fr 1fr;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+  }
+}
+
+.reply {
+  grid-area: reply;
+}
+
+.side {
+  grid-area: side;
+
+  @media (min-width: 1280px) {
+    margin-left: 48px;
+    padding-left: 40px;
+    border-left: 1px dashed var(--color-ink-soft);
+
+    // 1단일 때 본문과 나누던 위쪽 구분선·여백은 2단에서는 첫 섹션에 필요 없음
+    > :first-child {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+  }
 }
 
 // 장식: 모바일은 종이 위·아래 여백에, 데스크톱은 종이 바깥 테두리에 걸침
