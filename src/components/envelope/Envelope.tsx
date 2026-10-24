@@ -86,7 +86,8 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
       </div>
 
       {nickname === null ? (
-        <form className={styles.card} onSubmit={handleSubmit} noValidate>
+        // method="dialog": 하이드레이션 전(느린 모바일)에 눌러도 페이지가 새로고침되며 입력이 사라지지 않음
+        <form className={styles.card} method="dialog" onSubmit={handleSubmit} noValidate>
           <p className={styles.eyebrow}>A HALLOWEEN INVITATION</p>
           <h1 className={styles.title}>수신인을 확인해 주시겠습니까?</h1>
           <p className={styles.guide}>이름을 알려주시면 특별한 초대장을 전달해 드리겠습니다.</p>
