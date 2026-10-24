@@ -24,7 +24,7 @@ export default function Envelope() {
     setNickname(value);
   }
 
-  // shortcut: 상태만 바뀜, 덮개 열기 애니메이션·편지 화면 전환 작업에서 연결
+  // shortcut: 열린 상태에서 멈춤, 편지 화면 작업에서 다음 화면 전환 연결
   function open() {
     setOpened(true);
   }
@@ -33,25 +33,27 @@ export default function Envelope() {
 
   return (
     <section className={styles.scene}>
-      <div className={styles.envelope}>
+      <div className={styles.envelope} data-open={opened}>
         <Image src="/assets/open-letter-envelope.png" alt="" fill sizes="480px" priority />
-        <Image
-          src="/assets/top-letter-envelope.png"
-          alt=""
-          fill
-          sizes="480px"
-          className={styles.flap}
-          priority
-        />
-        <button
-          type="button"
-          className={styles.sticker}
-          onClick={open}
-          disabled={!sealReady}
-          aria-label="봉인 열기"
-        >
-          <Image src="/assets/envelope-sticker.png" alt="" width={338} height={392} priority />
-        </button>
+        <div className={styles.flapGroup}>
+          <Image
+            src="/assets/top-letter-envelope.png"
+            alt=""
+            fill
+            sizes="480px"
+            className={styles.flap}
+            priority
+          />
+          <button
+            type="button"
+            className={styles.sticker}
+            onClick={open}
+            disabled={!sealReady}
+            aria-label="봉인 열기"
+          >
+            <Image src="/assets/envelope-sticker.png" alt="" width={338} height={392} priority />
+          </button>
+        </div>
       </div>
 
       {nickname === null ? (

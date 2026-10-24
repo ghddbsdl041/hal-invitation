@@ -14,21 +14,40 @@
 }
 
 .envelope {
+  --w: min(100%, 480px);
+
   position: relative;
-  width: min(100%, 480px);
+  width: var(--w);
   aspect-ratio: 549 / 455;
+  // 열린 덮개가 위로 0.289w 튀어나오고, 이미지 아래 투명 여백이 0.131w (bbox 실측값)
+  margin: calc(var(--w) * 0.289) 0 calc(var(--w) * -0.131);
+  perspective: 1200px;
   filter: drop-shadow(0 12px 18px rgb(0 0 0 / 35%));
 
   @media (min-width: 900px) {
-    width: 520px;
+    --w: 520px;
+  }
+}
+
+// 덮개 + 스티커. 몸통 윗변(y 70/455, bbox 실측값)을 경첩으로 뒤집힘
+// 덮개를 몸통에 1px 겹쳐(y 71) 경첩 틈으로 배경이 비치지 않게 함
+.flapGroup {
+  position: absolute;
+  inset: 0;
+  transform-origin: 49.6% 15.6%;
+  transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // 스티커가 떨어진 뒤(peel 0.4s) 열림
+  [data-open="true"] > & {
+    transform: rotateX(180deg);
+    transition-delay: 0.35s;
   }
 }
 
 // top-letter-envelope는 몸통보다 작고 아래에 그려져 있어 몸통 윗변에 맞춤 (bbox 실측값)
-// transform-origin = 덮개 윗변 중앙 → 여는 애니메이션의 경첩
 .flap {
   transform-origin: 50.1% 30.1%;
-  transform: translate(-0.5%, -14.7%) scale(1.087);
+  transform: translate(-0.5%, -14.5%) scale(1.087);
 }
 
 .sticker {
@@ -62,8 +81,31 @@
     outline-offset: 4px;
   }
 
+  [data-open="true"] & {
+    animation: peel 0.4s ease-in forwards;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+  }
+}
+
+@keyframes peel {
+  to {
+    opacity: 0;
+    transform: translate(-30%, -140%) rotate(-25deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flapGroup,
+  [data-open="true"] .sticker {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  [data-open="true"] .sticker {
+    opacity: 0;
   }
 }
 
@@ -72,11 +114,17 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  justify-content: center;
   padding: 28px 24px;
   text-align: center;
   background: var(--color-paper);
   border-radius: var(--radius);
   box-shadow: 0 10px 24px rgb(0 0 0 / 30%);
+
+  // 세로 배치에서 단계마다 카드 높이가 달라져 봉투가 움직이지 않도록 가장 긴 상태(오류 표시) 기준으로 고정
+  @media (max-width: 899px) {
+    min-height: 360px;
+  }
 }
 
 .eyebrow {
