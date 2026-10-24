@@ -36,9 +36,35 @@
   top: 64%;
   left: 50%;
   width: 20%;
-  height: auto;
+  padding: 0;
+  background: none;
+  border: none;
   transform: translate(-50%, -50%) rotate(-3deg);
   filter: drop-shadow(0 2px 3px rgb(0 0 0 / 30%));
+  transition: transform 0.2s ease;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  &:enabled {
+    cursor: pointer;
+  }
+
+  &:enabled:hover {
+    transform: translate(-50%, -50%) rotate(-3deg) scale(1.06);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--color-paper);
+    outline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }
 
 .card {
@@ -103,12 +129,24 @@
   border-radius: var(--radius);
   cursor: pointer;
 
-  &:hover {
+  &:enabled:hover {
     filter: brightness(1.15);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
   }
 
   &:focus-visible {
     outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
+}
+
+.error {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-error);
+  word-break: keep-all;
 }
