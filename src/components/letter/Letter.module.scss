@@ -2,6 +2,17 @@
   display: flex;
   justify-content: center;
   padding: 72px 16px 96px;
+  animation: fade-in 0.5s ease both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }
 
 // 찢어진 가장자리(24px)는 테두리로 반복하고, 안쪽은 가장자리를 뺀 종이(letter-paper-inner, 3배 확대본)를 cover로 깔아
@@ -98,6 +109,7 @@
 
 .title {
   margin-bottom: 32px;
+  outline: none;
   font-size: 22px;
   font-weight: 700;
   line-height: 1.5;

@@ -1,9 +1,9 @@
-import Envelope from "@/components/envelope/Envelope";
+import Invitation from "@/components/Invitation";
 
 export default function Home() {
   return (
     <main>
-      <Envelope />
+      <Invitation />
     </main>
   );
 }

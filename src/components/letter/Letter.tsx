@@ -22,7 +22,14 @@ export default function Letter({ nickname }: { nickname: string }) {
         <Image src="/assets/candlelight.png" alt="" width={375} height={666} className={styles.candle} />
         <Image src="/assets/sticker.png" alt="" width={344} height={376} className={styles.stamp} />
 
-        <h1 className={styles.title}>이 계절의 만찬에 귀하를 초대합니다.</h1>
+        {/* 봉투에서 넘어왔을 때 스크린리더·키보드 포커스를 편지 시작점으로 */}
+        <h1
+          className={styles.title}
+          tabIndex={-1}
+          ref={(el) => el?.focus({ preventScroll: true })}
+        >
+          이 계절의 만찬에 귀하를 초대합니다.
+        </h1>
         <div className={styles.body}>
           <p>존경하는 {nickname}님께.</p>
           {PARAGRAPHS.map((text) => (

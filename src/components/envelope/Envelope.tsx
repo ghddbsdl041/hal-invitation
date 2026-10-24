@@ -1,15 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import styles from "./Envelope.module.scss";
 
 const NICKNAME_MAX = 20;
+// 스티커 0.4s + 덮개 0.9s(0.35s 지연) ≈ 1.25s 뒤 열린 모습을 0.6s 보여주고 0.4s 페이드아웃
+const FADE_AT = 1850;
+const DONE_AT = 2250;
 
-export default function Envelope() {
+export default function Envelope({ onOpened }: { onOpened: (nickname: string) => void }) {
   const [nickname, setNickname] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+
+  useEffect(() => {
+    if (!opened || nickname === null) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      onOpened(nickname);
+      return;
+    }
+    const fade = setTimeout(() => setLeaving(true), FADE_AT);
+    const done = setTimeout(() => onOpened(nickname), DONE_AT);
+    return () => {
+      clearTimeout(fade);
+      clearTimeout(done);
+    };
+  }, [opened, nickname, onOpened]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,7 +42,6 @@ export default function Envelope() {
     setNickname(value);
   }
 
-  // shortcut: 열린 상태에서 멈춤, 편지 화면 작업에서 다음 화면 전환 연결
   function open() {
     setOpened(true);
   }
@@ -32,7 +49,7 @@ export default function Envelope() {
   const sealReady = nickname !== null && !opened;
 
   return (
-    <section className={styles.scene}>
+    <section className={styles.scene} data-leaving={leaving}>
       <div className={styles.envelope} data-open={opened}>
         <Image src="/assets/open-letter-envelope.png" alt="" fill sizes="480px" priority />
         <div className={styles.flapGroup}>
