@@ -26,6 +26,9 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [declining, setDeclining] = useState(false);
   const [declineError, setDeclineError] = useState<string | null>(null);
+  // 이미 응답했으면 버튼을 숨기고 현재 응답만 표시. 수정은 티켓·마지막 화면의 '응답 수정'(scrollIntoView)이나 여기서 펼쳐서
+  const [revealed, setRevealed] = useState(false);
+  const showButtons = !saved || scrollIntoView || revealed;
   const rootRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
   const attendRef = useRef<HTMLButtonElement>(null);
@@ -44,7 +47,11 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
   }, [phase]);
 
   useEffect(() => {
-    if (phase !== "ready" && phase !== "dodging") return;
+    if (revealed) attendRef.current?.focus();
+  }, [revealed]);
+
+  useEffect(() => {
+    if (!showButtons || (phase !== "ready" && phase !== "dodging")) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     function onMove(e: PointerEvent) {
@@ -84,7 +91,7 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
 
     window.addEventListener("pointermove", onMove);
     return () => window.removeEventListener("pointermove", onMove);
-  }, [phase]);
+  }, [phase, showButtons]);
 
   async function handleDecline() {
     if (phase === "armed") {
@@ -113,35 +120,44 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
           {saved.attendance_status === "attending" ? `참석 (${saved.arrival_time} 도착 예정)` : "불참"}
         </p>
       )}
-      <div ref={areaRef} className={styles.area}>
-        <button
-          ref={attendRef}
-          type="button"
-          className={styles.attend}
-          onClick={() => setDialogOpen(true)}
-        >
-          참석하겠습니다
+      {!showButtons && (
+        <button type="button" className={styles.edit} onClick={() => setRevealed(true)}>
+          응답 수정하기
         </button>
-        <button
-          ref={declineRef}
-          type="button"
-          className={styles.decline}
-          style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
-          onClick={handleDecline}
-          aria-disabled={busy}
-        >
-          {declining ? "저장 중…" : "불참하겠습니다"}
-        </button>
-      </div>
-      <p className={styles.tease} aria-live="polite">
-        {(phase === "waiting" || phase === "armed") &&
-          "히히 같이 참석하고 싶은 마음에 잠깐 움직여보았습니다"}
-      </p>
+      )}
+      {showButtons && (
+        <>
+          <div ref={areaRef} className={styles.area}>
+            <button
+              ref={attendRef}
+              type="button"
+              className={styles.attend}
+              onClick={() => setDialogOpen(true)}
+            >
+              참석하겠습니다
+            </button>
+            <button
+              ref={declineRef}
+              type="button"
+              className={styles.decline}
+              style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
+              onClick={handleDecline}
+              aria-disabled={busy}
+            >
+              {declining ? "저장 중…" : "불참하겠습니다"}
+            </button>
+          </div>
+          <p className={styles.tease} aria-live="polite">
+            {(phase === "waiting" || phase === "armed") &&
+              "히히 같이 참석하고 싶은 마음에 잠깐 움직여보았습니다"}
+          </p>
 
-      {declineError && (
-        <p className={styles.error} role="alert">
-          불참 응답을 저장하지 못했습니다. 다시 눌러 주세요. ({declineError})
-        </p>
+          {declineError && (
+            <p className={styles.error} role="alert">
+              불참 응답을 저장하지 못했습니다. 다시 눌러 주세요. ({declineError})
+            </p>
+          )}
+        </>
       )}
 
       <ArrivalDialog
@@ -151,6 +167,7 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
         onConfirm={async (time) => {
           await onAttend(time);
           setDialogOpen(false);
+          setRevealed(false);
         }}
       />
     </div>
