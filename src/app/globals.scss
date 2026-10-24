@@ -1,3 +1,5 @@
+@use "../styles/tokens";
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -12,6 +14,10 @@ body {
 
 body {
   min-height: 100dvh;
+  font-family: var(--font-body), serif;
+  color: var(--color-ink);
+  background: var(--color-checker) url("/assets/checker-bg.jpeg") repeat;
+  background-size: 368px auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -19,4 +25,13 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

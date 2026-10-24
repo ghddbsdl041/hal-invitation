@@ -1,0 +1,114 @@
+.scene {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 32px 16px;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    gap: 48px;
+  }
+}
+
+.envelope {
+  position: relative;
+  width: min(100%, 480px);
+  aspect-ratio: 549 / 455;
+  filter: drop-shadow(0 12px 18px rgb(0 0 0 / 35%));
+
+  @media (min-width: 900px) {
+    width: 520px;
+  }
+}
+
+// top-letter-envelope는 몸통보다 작고 아래에 그려져 있어 몸통 윗변에 맞춤 (bbox 실측값)
+// transform-origin = 덮개 윗변 중앙 → 여는 애니메이션의 경첩
+.flap {
+  transform-origin: 50.1% 30.1%;
+  transform: translate(-0.5%, -14.7%) scale(1.087);
+}
+
+.sticker {
+  position: absolute;
+  top: 64%;
+  left: 50%;
+  width: 20%;
+  height: auto;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 30%));
+}
+
+.card {
+  width: min(100%, 400px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 24px;
+  text-align: center;
+  background: var(--color-paper);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 30%);
+}
+
+.eyebrow {
+  font-family: var(--font-display), serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  color: var(--color-burgundy);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.guide {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-ink-soft);
+  word-break: keep-all;
+}
+
+.input {
+  height: var(--tap-size);
+  margin-top: 8px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 16px; // 16px 미만이면 iOS가 입력 시 화면을 확대함
+  color: var(--color-ink);
+  background: #fffdf8;
+  border: 1px solid var(--color-ink-soft);
+  border-radius: var(--radius);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-burgundy);
+    outline-offset: 2px;
+  }
+}
+
+.button {
+  height: var(--tap-size);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-paper);
+  background: var(--color-burgundy);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.15);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
