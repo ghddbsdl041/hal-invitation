@@ -1,0 +1,133 @@
+.scene {
+  display: flex;
+  justify-content: center;
+  padding: 72px 16px 96px;
+}
+
+// 찢어진 가장자리(24px)는 테두리로 반복하고, 안쪽은 가장자리를 뺀 종이(letter-paper-inner)를 cover로 깔아
+// 본문 길이만큼 늘어남. 안쪽까지 border-image로 반복하면 사진 조명 차이로 타일 이음새가 보임
+.paper {
+  position: relative;
+  width: min(100%, 720px);
+  padding: 150px 28px 150px;
+  border: 22px solid transparent;
+  border-image: url("/assets/letter-paper.png") 24 / 22px round;
+  background: url("/assets/letter-paper-inner.png") center / cover padding-box;
+  filter: drop-shadow(0 12px 20px rgb(0 0 0 / 35%));
+
+  @media (min-width: 900px) {
+    // 좌우 장식이 종이 밖으로 나가는 만큼 확보
+    width: min(720px, 100% - 340px);
+    padding: 64px 72px 80px;
+  }
+}
+
+// 장식: 모바일은 종이 위·아래 여백에, 데스크톱은 종이 바깥 테두리에 걸침
+.lamp,
+.maple,
+.clipping,
+.candle,
+.stamp {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+}
+
+.lamp {
+  top: -56px;
+  left: -14px;
+  width: 78px;
+
+  @media (min-width: 900px) {
+    top: -40px;
+    left: -170px;
+    width: 200px;
+  }
+}
+
+.maple {
+  bottom: 24px;
+  left: -10px;
+  width: 84px;
+  transform: rotate(-18deg);
+
+  @media (min-width: 900px) {
+    bottom: 40px;
+    left: -130px;
+    width: 160px;
+  }
+}
+
+.clipping {
+  top: -44px;
+  right: -14px;
+  width: 130px;
+  transform: rotate(6deg);
+
+  @media (min-width: 900px) {
+    top: -50px;
+    right: -150px;
+    width: 220px;
+  }
+}
+
+.candle {
+  right: -6px;
+  bottom: -30px;
+  width: 64px;
+
+  @media (min-width: 900px) {
+    right: -110px;
+    bottom: -40px;
+    width: 120px;
+  }
+}
+
+.stamp {
+  right: 66px;
+  bottom: 8px;
+  width: 70px;
+  transform: rotate(-6deg);
+
+  @media (min-width: 900px) {
+    right: 40px;
+    bottom: -36px;
+    width: 96px;
+  }
+}
+
+.title {
+  margin-bottom: 32px;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  word-break: keep-all;
+
+  @media (min-width: 900px) {
+    font-size: 28px;
+  }
+}
+
+.body {
+  font-size: 16px;
+  line-height: 1.9;
+  word-break: keep-all;
+
+  p + p {
+    margin-top: 1em;
+  }
+
+  @media (min-width: 900px) {
+    font-size: 17px;
+  }
+}
+
+.closing {
+  margin-top: 2em !important;
+}
+
+.sign {
+  font-weight: 700;
+  text-align: right;
+}
