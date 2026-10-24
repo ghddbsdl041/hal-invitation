@@ -3,6 +3,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
+import { supabaseUrl } from "@/lib/supabase";
 
 // 관리자 인증: 비밀번호 하나(ADMIN_PASSWORD). 로그인하면 비밀번호로 서명한 값을 httpOnly 쿠키에 저장.
 // 비밀번호를 바꾸면 기존 쿠키는 자동으로 무효. DB 쓰기는 secret key(RLS 우회)로 서버에서만 수행
@@ -27,7 +28,7 @@ async function requireAdmin() {
 }
 
 function db() {
-  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SECRET_KEY!, {
+  return createClient(supabaseUrl(), process.env.SUPABASE_SECRET_KEY!, {
     auth: { persistSession: false },
   });
 }
