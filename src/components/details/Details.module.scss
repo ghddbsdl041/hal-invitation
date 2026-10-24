@@ -10,6 +10,47 @@
   font-size: 20px;
   font-weight: 700;
   text-align: center;
+  outline: none;
+}
+
+.attendBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 16px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: center;
+  background: rgb(200 85 46 / 10%);
+  border: 1px solid var(--color-pumpkin);
+  border-radius: var(--radius);
+
+  p {
+    font-weight: 700;
+    color: var(--color-burgundy);
+    word-break: keep-all;
+  }
+}
+
+.ticketButton {
+  height: 44px;
+  padding: 0 18px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-paper);
+  background: var(--color-pumpkin);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
 }
 
 .info {
@@ -137,8 +178,9 @@
     background: #fffdf8;
   }
 
-  &:disabled {
-    opacity: 0.6;
+  &:disabled,
+  &[aria-disabled="true"] {
+    opacity: 0.45;
     cursor: default;
   }
 

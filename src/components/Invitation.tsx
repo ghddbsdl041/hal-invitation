@@ -24,6 +24,7 @@ export default function Invitation() {
   const [nickname, setNickname] = useState<string | null>(null);
   const [step, setStep] = useState<Step>("letter");
   const [focus, setFocus] = useState<Focus>("top");
+  const [justAttended, setJustAttended] = useState(false);
 
   function refreshPublic() {
     setPubError(false);
@@ -42,9 +43,10 @@ export default function Invitation() {
     );
   }, []);
 
-  function go(next: Step, at: Focus = "top") {
+  function go(next: Step, at: Focus = "top", attended = false) {
     if (at === "top") window.scrollTo(0, 0);
     setFocus(at);
+    setJustAttended(attended);
     setStep(next);
   }
 
@@ -99,6 +101,8 @@ export default function Invitation() {
             attending={attending}
             deadline={pub.settings.voting_deadline}
             scrollIntoView={focus === "food"}
+            justAttended={justAttended}
+            onTicket={() => go("ticket")}
             onVote={async (id) => {
               await castVote(id);
               setVote(id);
@@ -126,7 +130,12 @@ export default function Invitation() {
         scrollIntoView={focus === "rsvp"}
         onAttend={async (arrival) => {
           setResponse(await submitResponse(nickname, "attending", arrival));
-          go("ticket");
+          const canVote =
+            pub?.categories.some((c) => c.food_candidates.length > 0) &&
+            Date.now() < new Date(pub.settings.voting_deadline).getTime();
+          // 투표할 후보가 있으면 메뉴로 먼저 안내하고, 없거나 마감이면 바로 티켓
+          if (canVote) go("letter", "food", true);
+          else go("ticket");
         }}
         onDecline={async () => {
           setResponse(await submitResponse(nickname, "declined", null));

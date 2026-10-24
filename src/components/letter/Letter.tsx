@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useEffect, useRef, type ReactNode } from "react";
 import Image from "next/image";
 import styles from "./Letter.module.scss";
 
@@ -21,6 +23,13 @@ type Props = {
 };
 
 export default function Letter({ nickname, focusTitle = true, children }: Props) {
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  // 마운트 때 한 번만 (ref 콜백으로 하면 투표 등으로 다시 그릴 때마다 포커스를 빼앗음)
+  useEffect(() => {
+    if (focusTitle) titleRef.current?.focus({ preventScroll: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <section className={styles.scene}>
       <article className={styles.paper}>
@@ -34,9 +43,7 @@ export default function Letter({ nickname, focusTitle = true, children }: Props)
         <h1
           className={styles.title}
           tabIndex={-1}
-          ref={(el) => {
-            if (focusTitle) el?.focus({ preventScroll: true });
-          }}
+          ref={titleRef}
         >
           이 계절의 만찬에 귀하를 초대합니다.
         </h1>

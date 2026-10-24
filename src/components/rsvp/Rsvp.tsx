@@ -26,9 +26,16 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [declining, setDeclining] = useState(false);
   const [declineError, setDeclineError] = useState<string | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
   const attendRef = useRef<HTMLButtonElement>(null);
   const declineRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!scrollIntoView) return;
+    rootRef.current?.scrollIntoView({ block: "center" });
+    attendRef.current?.focus({ preventScroll: true });
+  }, [scrollIntoView]);
 
   useEffect(() => {
     if (phase !== "dodging" && phase !== "waiting") return;
@@ -98,14 +105,7 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
   const busy = phase === "dodging" || phase === "waiting" || declining;
 
   return (
-    <div
-      className={styles.rsvp}
-      ref={(el) => {
-        if (!scrollIntoView || !el) return;
-        el.scrollIntoView({ block: "center" });
-        attendRef.current?.focus({ preventScroll: true });
-      }}
-    >
+    <div className={styles.rsvp} ref={rootRef}>
       <h2 className={styles.heading}>회신</h2>
       {saved && (
         <p className={styles.current}>
