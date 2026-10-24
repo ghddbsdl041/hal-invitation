@@ -4,6 +4,20 @@
   border-top: 1px dashed var(--color-ink-soft);
 }
 
+.heading {
+  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.current {
+  margin-bottom: 16px;
+  font-size: 15px;
+  text-align: center;
+  color: var(--color-ink-soft);
+}
+
 .area {
   position: relative;
   display: flex;
@@ -62,5 +76,14 @@
   line-height: 1.5;
   text-align: center;
   color: var(--color-pumpkin);
+  word-break: keep-all;
+}
+
+.error {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-error);
   word-break: keep-all;
 }

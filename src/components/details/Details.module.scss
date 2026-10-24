@@ -1,0 +1,156 @@
+.section {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px dashed var(--color-ink-soft);
+  scroll-margin-top: 24px;
+}
+
+.heading {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.info {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 16px;
+  font-size: 16px;
+  line-height: 1.6;
+
+  dt {
+    font-weight: 700;
+    color: var(--color-burgundy);
+  }
+
+  dd {
+    word-break: keep-all;
+  }
+}
+
+.sub {
+  display: block;
+  font-size: 14px;
+  color: var(--color-ink-soft);
+}
+
+.mapLink {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 14px;
+  color: var(--color-burgundy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.notice {
+  margin-top: 16px;
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-line;
+  word-break: keep-all;
+}
+
+.guide {
+  margin-bottom: 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--color-ink-soft);
+  word-break: keep-all;
+}
+
+.category + .category {
+  margin-top: 20px;
+}
+
+.categoryName {
+  margin-bottom: 8px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.empty {
+  font-size: 14px;
+  color: var(--color-ink-soft);
+}
+
+.candidates {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+}
+
+.candidate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgb(255 253 248 / 70%);
+  border: 1px solid rgb(91 74 63 / 30%);
+  border-radius: var(--radius);
+
+  &[data-mine="true"] {
+    border-color: var(--color-burgundy);
+    box-shadow: inset 0 0 0 1px var(--color-burgundy);
+  }
+}
+
+.candidateText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 16px;
+  word-break: keep-all;
+}
+
+.voteBox {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.count {
+  font-size: 15px;
+  color: var(--color-ink-soft);
+}
+
+.voteButton {
+  min-width: 76px;
+  height: 40px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-paper);
+  background: var(--color-burgundy);
+  border: 1px solid var(--color-burgundy);
+  border-radius: var(--radius);
+  cursor: pointer;
+
+  &[aria-pressed="true"] {
+    color: var(--color-burgundy);
+    background: #fffdf8;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
+
+.error {
+  margin-top: 12px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--color-error);
+}

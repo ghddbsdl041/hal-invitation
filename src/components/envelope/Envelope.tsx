@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./Envelope.module.scss";
 
@@ -9,11 +9,23 @@ const NICKNAME_MAX = 20;
 const FADE_AT = 1850;
 const DONE_AT = 2250;
 
-export default function Envelope({ onOpened }: { onOpened: (nickname: string) => void }) {
+type Props = {
+  // 같은 브라우저로 다시 온 경우 저장된 닉네임 (불러오기가 끝난 뒤 도착할 수 있음)
+  savedNickname?: string;
+  onOpened: (nickname: string) => void;
+};
+
+export default function Envelope({ savedNickname, onOpened }: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [nickname, setNickname] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [opened, setOpened] = useState(false);
   const [leaving, setLeaving] = useState(false);
+
+  useEffect(() => {
+    // 사용자가 이미 입력하기 시작했으면 덮어쓰지 않음
+    if (savedNickname && inputRef.current && !inputRef.current.value) inputRef.current.value = savedNickname;
+  }, [savedNickname]);
 
   useEffect(() => {
     if (!opened || nickname === null) return;
@@ -82,6 +94,7 @@ export default function Envelope({ onOpened }: { onOpened: (nickname: string) =>
             성함 또는 별명
           </label>
           <input
+            ref={inputRef}
             id="nickname"
             name="nickname"
             className={styles.input}

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import ArrivalDialog, { type ArrivalTime } from "./ArrivalDialog";
+import type { ArrivalTime, SavedResponse } from "@/lib/event";
+import ArrivalDialog from "./ArrivalDialog";
 import styles from "./Rsvp.module.scss";
 
 const DODGE_MS = 3000;
@@ -12,17 +13,19 @@ const DODGE_RADIUS = 90;
 type Phase = "ready" | "dodging" | "waiting" | "armed";
 
 type Props = {
-  initialArrival: ArrivalTime | null;
+  saved: SavedResponse | null;
   // 응답 수정으로 돌아왔을 때 이 영역을 화면 가운데로
   scrollIntoView?: boolean;
-  onAttend: (time: ArrivalTime) => void;
-  onDecline: () => void;
+  onAttend: (time: ArrivalTime) => Promise<void>;
+  onDecline: () => Promise<void>;
 };
 
-export default function Rsvp({ initialArrival, scrollIntoView = false, onAttend, onDecline }: Props) {
+export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDecline }: Props) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [phase, setPhase] = useState<Phase>("ready");
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [declining, setDeclining] = useState(false);
+  const [declineError, setDeclineError] = useState<string | null>(null);
   const areaRef = useRef<HTMLDivElement>(null);
   const attendRef = useRef<HTMLButtonElement>(null);
   const declineRef = useRef<HTMLButtonElement>(null);
@@ -76,13 +79,23 @@ export default function Rsvp({ initialArrival, scrollIntoView = false, onAttend,
     return () => window.removeEventListener("pointermove", onMove);
   }, [phase]);
 
-  function handleDecline() {
-    if (phase === "armed") onDecline();
+  async function handleDecline() {
+    if (phase === "armed") {
+      if (declining) return;
+      setDeclining(true);
+      setDeclineError(null);
+      try {
+        await onDecline();
+      } catch (e) {
+        setDeclineError((e as Error).message);
+        setDeclining(false);
+      }
+    }
     // 인터랙션 도중에는 응답하지 않음. 터치·키보드·움직임 줄이기는 첫 누름에 안내만 표시
     else if (phase === "ready") setPhase("waiting");
   }
 
-  const busy = phase === "dodging" || phase === "waiting";
+  const busy = phase === "dodging" || phase === "waiting" || declining;
 
   return (
     <div
@@ -93,6 +106,13 @@ export default function Rsvp({ initialArrival, scrollIntoView = false, onAttend,
         attendRef.current?.focus({ preventScroll: true });
       }}
     >
+      <h2 className={styles.heading}>회신</h2>
+      {saved && (
+        <p className={styles.current}>
+          현재 응답:{" "}
+          {saved.attendance_status === "attending" ? `참석 (${saved.arrival_time} 도착 예정)` : "불참"}
+        </p>
+      )}
       <div ref={areaRef} className={styles.area}>
         <button
           ref={attendRef}
@@ -110,7 +130,7 @@ export default function Rsvp({ initialArrival, scrollIntoView = false, onAttend,
           onClick={handleDecline}
           aria-disabled={busy}
         >
-          불참하겠습니다
+          {declining ? "저장 중…" : "불참하겠습니다"}
         </button>
       </div>
       <p className={styles.tease} aria-live="polite">
@@ -118,13 +138,19 @@ export default function Rsvp({ initialArrival, scrollIntoView = false, onAttend,
           "히히 같이 참석하고 싶은 마음에 잠깐 움직여보았습니다"}
       </p>
 
+      {declineError && (
+        <p className={styles.error} role="alert">
+          불참 응답을 저장하지 못했습니다. 다시 눌러 주세요. ({declineError})
+        </p>
+      )}
+
       <ArrivalDialog
         open={dialogOpen}
-        initial={initialArrival}
+        initial={saved?.arrival_time ?? null}
         onCancel={() => setDialogOpen(false)}
-        onConfirm={(time) => {
+        onConfirm={async (time) => {
+          await onAttend(time);
           setDialogOpen(false);
-          onAttend(time);
         }}
       />
     </div>

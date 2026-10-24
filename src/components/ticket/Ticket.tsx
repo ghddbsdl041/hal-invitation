@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { saveTicketImage } from "@/lib/saveTicketImage";
-import type { ArrivalTime } from "../rsvp/ArrivalDialog";
+import type { ArrivalTime } from "@/lib/event";
 import styles from "./Ticket.module.scss";
 
 type Props = {
@@ -13,6 +13,7 @@ type Props = {
   venueName: string | null;
   ticketNo: string;
   onEdit: () => void;
+  onVote: () => void;
   onNext: () => void;
 };
 
@@ -28,7 +29,7 @@ function formatTime(time: ArrivalTime) {
   return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`;
 }
 
-export default function Ticket({ nickname, arrival, eventDate, venueName, ticketNo, onEdit, onNext }: Props) {
+export default function Ticket({ nickname, arrival, eventDate, venueName, ticketNo, onEdit, onVote, onNext }: Props) {
   const ticketRef = useRef<HTMLDivElement>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(false);
@@ -102,6 +103,9 @@ export default function Ticket({ nickname, arrival, eventDate, venueName, ticket
         </button>
         <button type="button" className={styles.button} onClick={onEdit}>
           응답 수정
+        </button>
+        <button type="button" className={styles.link} onClick={onVote}>
+          메뉴 투표하러 가기 →
         </button>
         <button type="button" className={styles.link} onClick={onNext}>
           마지막 화면으로 →

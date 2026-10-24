@@ -116,3 +116,10 @@
   background: none;
   border: none;
 }
+
+.error {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-error);
+  word-break: keep-all;
+}
