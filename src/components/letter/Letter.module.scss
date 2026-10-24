@@ -4,7 +4,7 @@
   padding: 72px 16px 96px;
 }
 
-// 찢어진 가장자리(24px)는 테두리로 반복하고, 안쪽은 가장자리를 뺀 종이(letter-paper-inner)를 cover로 깔아
+// 찢어진 가장자리(24px)는 테두리로 반복하고, 안쪽은 가장자리를 뺀 종이(letter-paper-inner, 3배 확대본)를 cover로 깔아
 // 본문 길이만큼 늘어남. 안쪽까지 border-image로 반복하면 사진 조명 차이로 타일 이음새가 보임
 .paper {
   position: relative;
@@ -12,7 +12,7 @@
   padding: 150px 28px 150px;
   border: 22px solid transparent;
   border-image: url("/assets/letter-paper.png") 24 / 22px round;
-  background: url("/assets/letter-paper-inner.png") center / cover padding-box;
+  background: url("/assets/letter-paper-inner.jpg") center / cover padding-box;
   filter: drop-shadow(0 12px 20px rgb(0 0 0 / 35%));
 
   @media (min-width: 900px) {
