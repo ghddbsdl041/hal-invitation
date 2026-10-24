@@ -1,0 +1,66 @@
+.rsvp {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px dashed var(--color-ink-soft);
+}
+
+.area {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+
+  // 마우스 환경에서만 불참 버튼이 피해 다닐 공간 확보
+  @media (hover: hover) and (pointer: fine) {
+    min-height: 160px;
+  }
+}
+
+.attend,
+.decline {
+  min-width: 160px;
+  height: var(--tap-size);
+  padding: 0 20px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: var(--radius);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
+
+.attend {
+  color: var(--color-paper);
+  background: var(--color-burgundy);
+  border: none;
+
+  &:hover {
+    filter: brightness(1.15);
+  }
+}
+
+.decline {
+  color: var(--color-burgundy);
+  background: #fffdf8;
+  border: 1px solid var(--color-burgundy);
+  transition: transform 0.15s ease-out;
+
+  &[aria-disabled="true"] {
+    cursor: default;
+  }
+}
+
+.tease {
+  min-height: 1.5em;
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--color-pumpkin);
+  word-break: keep-all;
+}

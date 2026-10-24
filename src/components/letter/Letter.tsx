@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import styles from "./Letter.module.scss";
 
@@ -12,7 +13,7 @@ const PARAGRAPHS = [
   "그날의 식탁이 얼마나 근사할지는 아직 알 수 없으나, 함께할 사람이 있다는 사실만큼은 미리 기뻐해 두겠습니다.",
 ];
 
-export default function Letter({ nickname }: { nickname: string }) {
+export default function Letter({ nickname, children }: { nickname: string; children?: ReactNode }) {
   return (
     <section className={styles.scene}>
       <article className={styles.paper}>
@@ -38,6 +39,7 @@ export default function Letter({ nickname }: { nickname: string }) {
           <p className={styles.closing}>귀하의 답신을 기다리며,</p>
           <p className={styles.sign}>만찬 주최자 올림</p>
         </div>
+        {children}
       </article>
     </section>
   );
