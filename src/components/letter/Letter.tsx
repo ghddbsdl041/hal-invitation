@@ -13,7 +13,14 @@ const PARAGRAPHS = [
   "그날의 식탁이 얼마나 근사할지는 아직 알 수 없으나, 함께할 사람이 있다는 사실만큼은 미리 기뻐해 두겠습니다.",
 ];
 
-export default function Letter({ nickname, children }: { nickname: string; children?: ReactNode }) {
+type Props = {
+  nickname: string;
+  // 응답 수정으로 돌아올 때는 제목 대신 응답 영역으로 포커스를 보냄
+  focusTitle?: boolean;
+  children?: ReactNode;
+};
+
+export default function Letter({ nickname, focusTitle = true, children }: Props) {
   return (
     <section className={styles.scene}>
       <article className={styles.paper}>
@@ -27,7 +34,9 @@ export default function Letter({ nickname, children }: { nickname: string; child
         <h1
           className={styles.title}
           tabIndex={-1}
-          ref={(el) => el?.focus({ preventScroll: true })}
+          ref={(el) => {
+            if (focusTitle) el?.focus({ preventScroll: true });
+          }}
         >
           이 계절의 만찬에 귀하를 초대합니다.
         </h1>

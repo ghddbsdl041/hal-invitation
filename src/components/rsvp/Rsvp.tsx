@@ -13,11 +13,13 @@ type Phase = "ready" | "dodging" | "waiting" | "armed";
 
 type Props = {
   initialArrival: ArrivalTime | null;
+  // 응답 수정으로 돌아왔을 때 이 영역을 화면 가운데로
+  scrollIntoView?: boolean;
   onAttend: (time: ArrivalTime) => void;
   onDecline: () => void;
 };
 
-export default function Rsvp({ initialArrival, onAttend, onDecline }: Props) {
+export default function Rsvp({ initialArrival, scrollIntoView = false, onAttend, onDecline }: Props) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [phase, setPhase] = useState<Phase>("ready");
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -83,7 +85,14 @@ export default function Rsvp({ initialArrival, onAttend, onDecline }: Props) {
   const busy = phase === "dodging" || phase === "waiting";
 
   return (
-    <div className={styles.rsvp}>
+    <div
+      className={styles.rsvp}
+      ref={(el) => {
+        if (!scrollIntoView || !el) return;
+        el.scrollIntoView({ block: "center" });
+        attendRef.current?.focus({ preventScroll: true });
+      }}
+    >
       <div ref={areaRef} className={styles.area}>
         <button
           ref={attendRef}
