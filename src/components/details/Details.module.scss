@@ -1,11 +1,12 @@
 .section {
   margin-top: 48px;
   padding-top: 32px;
-  border-top: 1px dashed var(--color-ink-soft);
+  border-top: 1px dashed var(--color-green);
   scroll-margin-top: 24px;
 }
 
 .heading {
+  font-family: var(--font-display), serif;
   margin-bottom: 16px;
   font-size: 20px;
   font-weight: 700;
@@ -24,13 +25,13 @@
   font-size: 15px;
   line-height: 1.6;
   text-align: center;
-  background: rgb(200 85 46 / 10%);
-  border: 1px solid var(--color-pumpkin);
+  // background: rgb(200 85 46 / 10%);
+  // border: 1px solid var(--color-orange);
   border-radius: var(--radius);
 
   p {
     font-weight: 700;
-    color: var(--color-burgundy);
+    color: var(--color-purple);
     word-break: keep-all;
   }
 }
@@ -42,9 +43,10 @@
   font-size: 15px;
   font-weight: 700;
   color: var(--color-paper);
-  background: var(--color-pumpkin);
+  background: #c8552e;
   border: none;
-  border-radius: var(--radius);
+  //border-radius: var(--radius);
+  border-radius: 20px;
   cursor: pointer;
 
   &:focus-visible {
@@ -57,30 +59,34 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 10px 16px;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.6;
 
   dt {
     font-weight: 700;
-    color: var(--color-burgundy);
+    color: var(--color-purple);
   }
 
   dd {
     word-break: keep-all;
+  }
+
+  .date {
+    color: #871b25; // 투표 버튼 배경색
   }
 }
 
 .sub {
   display: block;
   font-size: 14px;
-  color: var(--color-ink-soft);
+  color: var(--color-green);
 }
 
 .mapLink {
   display: inline-block;
   margin-top: 2px;
   font-size: 14px;
-  color: var(--color-burgundy);
+  color: var(--color-purple);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -98,7 +104,7 @@
   font-size: 15px;
   line-height: 1.6;
   text-align: center;
-  color: var(--color-ink-soft);
+  color: var(--color-green);
   word-break: keep-all;
 }
 
@@ -108,13 +114,13 @@
 
 .categoryName {
   margin-bottom: 8px;
-  font-size: 17px;
+  font-size: 25px;
   font-weight: 700;
 }
 
 .empty {
   font-size: 14px;
-  color: var(--color-ink-soft);
+  color: var(--color-green);
 }
 
 .candidates {
@@ -139,12 +145,24 @@
   gap: 12px;
   padding: 12px 14px;
   background: rgb(255 253 248 / 70%);
-  border: 1px solid rgb(91 74 63 / 30%);
+  border: 1px solid rgb(116 107 42 / 30%);
   border-radius: var(--radius);
 
   &[data-mine="true"] {
-    border-color: var(--color-burgundy);
-    box-shadow: inset 0 0 0 1px var(--color-burgundy);
+    border-color: var(--color-purple);
+    box-shadow: inset 0 0 0 1px var(--color-purple);
+  }
+}
+
+.photo {
+  position: relative;
+  flex: 0 0 100%;
+  height: 180px;
+  overflow: hidden;
+  border-radius: var(--radius);
+
+  img {
+    object-fit: cover;
   }
 }
 
@@ -153,7 +171,7 @@
   flex: 1 1 150px;
   flex-direction: column;
   min-width: 0;
-  font-size: 16px;
+  font-size: 18px;
   word-break: keep-all;
 }
 
@@ -166,8 +184,9 @@
 }
 
 .count {
-  font-size: 15px;
-  color: var(--color-ink-soft);
+  font-size: 21px;
+  // color: var(--color-green);\
+  color: var(--color-purple);
 }
 
 .voteButton {
@@ -178,13 +197,14 @@
   font-size: 15px;
   font-weight: 700;
   color: var(--color-paper);
-  background: var(--color-burgundy);
-  border: 1px solid var(--color-burgundy);
-  border-radius: var(--radius);
+  background: #871b25;
+  border: 1px solid #5c1018;
+  //border-radius: var(--radius);
+  border-radius: 20px;
   cursor: pointer;
 
   &[aria-pressed="true"] {
-    color: var(--color-burgundy);
+    color: #5c1018;
     background: #fffdf8;
   }
 

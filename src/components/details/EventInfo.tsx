@@ -10,7 +10,7 @@ export default function EventInfo({ settings }: { settings: EventSettings }) {
       </h2>
       <dl className={styles.info}>
         <dt>날짜</dt>
-        <dd>{formatEventDate(settings.event_date)}</dd>
+        <dd className={styles.date}>{formatEventDate(settings.event_date)}</dd>
         <dt>시간</dt>
         <dd>{settings.event_time_label}</dd>
         <dt>장소</dt>

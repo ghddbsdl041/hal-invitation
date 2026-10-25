@@ -51,6 +51,17 @@ $wide: 1280px;
   @media (min-width: $wide) {
     @include paper("/assets/letter-paper-inner-landscape.jpg");
     position: relative;
+    background: none;
+
+    // 종이만 80% 불투명하게 (요소 opacity는 글씨까지 흐려짐). drop-shadow가 쌓임 맥락을 만들어 -1이어도 종이 안에 머묾
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: url("/assets/letter-paper-inner-landscape.jpg") center / cover;
+      opacity: 0.8;
+    }
   }
 }
 
@@ -64,7 +75,7 @@ $wide: 1280px;
 // 둘째 장: 만찬 안내 · 메뉴 · 회신
 .replySheet {
   @media (min-width: $wide) {
-    margin-top: 48px;
+    margin-top: 80px; // 첫 장 양초와 둘째 장 신문 조각이 붙지 않게
     padding: 48px 72px 40px;
 
     // 본문과 나누던 위쪽 구분선은 따로 떨어진 종이에서는 필요 없음
@@ -73,6 +84,13 @@ $wide: 1280px;
       padding-top: 0;
       border-top: none;
     }
+  }
+}
+
+// 좁은 화면에서는 둘째 종이가 첫 종이와 한 장이라 장식이 겹침
+.replyDecorations {
+  @media (max-width: #{$wide - 1}) {
+    display: none;
   }
 }
 
@@ -88,69 +106,70 @@ $wide: 1280px;
 }
 
 .lamp {
-  top: -56px;
-  left: -14px;
-  width: 78px;
+  top: -70px;
+  left: -18px;
+  width: 94px;
 
   @media (min-width: 900px) {
     top: -40px;
-    left: -170px;
-    width: 200px;
+    left: -230px;
+    width: 260px;
   }
 }
 
 .maple {
   bottom: 24px;
-  left: -10px;
-  width: 84px;
+  left: -12px;
+  width: 100px;
   transform: rotate(-18deg);
 
   @media (min-width: 900px) {
     bottom: 40px;
-    left: -130px;
-    width: 160px;
+    left: -180px;
+    width: 210px;
   }
 }
 
 .clipping {
-  top: -44px;
-  right: -14px;
-  width: 130px;
+  top: -52px;
+  right: -16px;
+  width: 156px;
   transform: rotate(6deg);
 
   @media (min-width: 900px) {
-    top: -50px;
-    right: -150px;
-    width: 220px;
+    top: -70px;
+    right: -210px;
+    width: 280px;
   }
 }
 
 .candle {
   right: -6px;
-  bottom: -30px;
-  width: 64px;
+  bottom: -36px;
+  width: 78px;
 
   @media (min-width: 900px) {
-    right: -110px;
-    bottom: -40px;
-    width: 120px;
+    right: -150px;
+    bottom: -50px;
+    width: 160px;
   }
 }
 
 .stamp {
   right: 66px;
   bottom: 8px;
-  width: 70px;
+  width: 84px;
   transform: rotate(-6deg);
 
   @media (min-width: 900px) {
     right: 40px;
-    bottom: -36px;
-    width: 96px;
+    bottom: -46px;
+    width: 124px;
   }
 }
 
 .title {
+  font-family: var(--font-display), serif;
   margin-bottom: 32px;
   outline: none;
   font-size: 22px;
@@ -165,7 +184,7 @@ $wide: 1280px;
 }
 
 .body {
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.9;
   word-break: keep-all;
 
@@ -174,13 +193,13 @@ $wide: 1280px;
   }
 
   @media (min-width: 900px) {
-    font-size: 17px;
+    font-size: 19px;
   }
 
   @media (min-width: $wide) {
     columns: 2;
     column-gap: 64px;
-    column-rule: 1px dashed rgb(91 74 63 / 50%);
+    column-rule: 1px dashed rgb(116 107 42 / 50%);
 
     // 문단 중간에서 넘어가도 되게 해서 두 단 길이를 맞춤 (단 끝·처음에 한 줄만 남지 않게)
     orphans: 2;

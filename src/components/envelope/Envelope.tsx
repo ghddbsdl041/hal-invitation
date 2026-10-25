@@ -63,13 +63,13 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
   return (
     <section className={styles.scene} data-leaving={leaving}>
       <div className={styles.envelope} data-open={opened}>
-        <Image src="/assets/open-letter-envelope.png" alt="" fill sizes="480px" priority />
+        <Image src="/assets/open-letter-envelope.png" alt="" fill sizes="560px" priority />
         <div className={styles.flapGroup}>
           <Image
             src="/assets/top-letter-envelope.png"
             alt=""
             fill
-            sizes="480px"
+            sizes="560px"
             className={styles.flap}
             priority
           />

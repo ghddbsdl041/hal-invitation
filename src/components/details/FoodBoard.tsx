@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { formatDeadline, safeUrl, type Category } from "@/lib/event";
 import styles from "./Details.module.scss";
+
+// 하이드레이션 전에 이미 실패한 사진은 onError가 오지 않아서 ref에서도 확인
+function hideIfBroken(img: HTMLImageElement | null) {
+  if (img?.complete && !img.naturalWidth) img.parentElement!.hidden = true;
+}
 
 type Props = {
   categories: Category[];
@@ -66,17 +72,16 @@ export default function FoodBoard({
       <h2 id="food-board" className={styles.heading} tabIndex={-1} ref={headingRef}>
         메뉴 후보
       </h2>
-      {attending && (
-        <div className={styles.attendBar} role={justAttended ? "status" : undefined}>
-          {justAttended && (
-            <p>
-              참석이 확정되었습니다!
-              <br />
-              {closed ? "투표는 마감되었습니다." : "메뉴에 투표하신 뒤 티켓을 받아 가세요."}
-            </p>
-          )}
+      {/* 평소의 '내 티켓 보기'는 회신 영역에. 여기는 방금 참석한 경우의 안내만 */}
+      {attending && justAttended && (
+        <div className={styles.attendBar} role="status">
+          <p>
+            참석이 확정되었습니다!
+            <br />
+            {closed ? "투표는 마감되었습니다." : "메뉴에 투표하신 뒤 티켓을 받아 가세요."}
+          </p>
           <button type="button" className={styles.ticketButton} onClick={onTicket}>
-            {justAttended ? "티켓 받기" : "내 티켓 보기"}
+            티켓 받기
           </button>
         </div>
       )}
@@ -100,6 +105,17 @@ export default function FoodBoard({
                 const mapUrl = safeUrl(c.map_url);
                 return (
                   <li key={c.id} className={styles.candidate} data-mine={mine}>
+                    {/* shortcut: 사진은 public/assets/food/{가게 이름}.jpg, 관리자에서 이름을 바꾸면 파일명도 바꿔야 함. 파일이 없으면 칸을 숨김 */}
+                    <div className={styles.photo}>
+                      <Image
+                        src={`/assets/food/${encodeURIComponent(c.name)}.jpg`}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1280px) 320px, 90vw"
+                        ref={hideIfBroken}
+                        onError={(e) => hideIfBroken(e.currentTarget)}
+                      />
+                    </div>
                     <div className={styles.candidateText}>
                       <strong>{c.name}</strong>
                       {c.description && <span className={styles.sub}>{c.description}</span>}

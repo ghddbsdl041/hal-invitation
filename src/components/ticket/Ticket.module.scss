@@ -35,7 +35,8 @@ $notch: 14px;
 .ticket {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr $stub;
+  // minmax(0): 본문이 넓어져도 절취선 오른쪽 stub을 밀어내지 않게
+  grid-template-columns: minmax(0, 1fr) $stub;
   width: 800px;
   height: 380px;
   color: var(--color-ink);
@@ -175,21 +176,20 @@ $notch: 14px;
 }
 
 .title {
-  font-family: var(--font-ticket-title), sans-serif;
-  font-size: 36px;
+  font-family: var(--font-display), serif;
+  font-size: 32px; // 제목 글꼴(--font-display)이 넓어 36px면 절취선을 넘음
   line-height: 1.1;
-  color: var(--color-pumpkin);
+  color: var(--color-orange);
   white-space: nowrap;
-  text-shadow: 2px 3px 0 rgb(43 29 22 / 18%);
+  text-shadow: 2px 3px 0 rgb(34 32 35 / 18%);
 
   @media (max-width: 639px) {
-    font-size: 23px;
+    font-size: 22px;
   }
 }
 
 .holder {
   margin-top: 14px;
-  font-family: var(--font-ticket), var(--font-body), sans-serif;
   font-size: 24px;
   letter-spacing: 0.02em;
   overflow-wrap: anywhere;
@@ -205,7 +205,6 @@ $notch: 14px;
 
 .info {
   margin-top: auto;
-  font-family: var(--font-ticket), var(--font-body), sans-serif;
 
   @media (max-width: 639px) {
     margin-top: 18px;
@@ -224,9 +223,8 @@ $notch: 14px;
 
 .venue {
   margin-top: 6px;
-  font-family: var(--font-body), serif;
   font-size: 14px;
-  color: var(--color-ink-soft);
+  color: var(--color-green);
 }
 
 .stub {
@@ -256,14 +254,12 @@ $notch: 14px;
 
 .no {
   width: 100%;
-  font-family: var(--font-ticket), sans-serif;
   font-size: 13px;
   letter-spacing: 0.15em;
-  color: var(--color-ink-soft);
+  color: var(--color-green);
 }
 
 .stubText {
-  font-family: var(--font-ticket), sans-serif;
   font-size: 26px;
   line-height: 1.25;
 

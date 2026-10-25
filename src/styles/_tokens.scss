@@ -1,11 +1,11 @@
-// 레퍼런스(docs/references)에서 추출한 색상
+// 확정 팔레트: 주황·베이지·그린·퍼플·어두운 보라
 :root {
-  --color-burgundy: #5c1018;
-  --color-checker: #9c8573;
+  --color-orange: #dc5d10;
+  --color-beige: #d0b88d;
+  --color-green: #746b2a;
+  --color-purple: #46374b;
+  --color-ink: #222023; // 어두운 보라 (본문)
   --color-paper: #f4efe3;
-  --color-ink: #2b1d16;
-  --color-ink-soft: #5b4a3f;
-  --color-pumpkin: #c8552e;
   --color-error: #9b1c1c;
 
   --radius: 6px;

@@ -18,9 +18,10 @@ type Props = {
   scrollIntoView?: boolean;
   onAttend: (time: ArrivalTime) => Promise<void>;
   onDecline: () => Promise<void>;
+  onTicket: () => void;
 };
 
-export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDecline }: Props) {
+export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDecline, onTicket }: Props) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [phase, setPhase] = useState<Phase>("ready");
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -122,6 +123,11 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
           현재 응답:{" "}
           {saved.attendance_status === "attending" ? `참석 (${saved.arrival_time} 도착 예정)` : "불참"}
         </p>
+      )}
+      {saved?.attendance_status === "attending" && (
+        <button type="button" className={styles.ticket} onClick={onTicket}>
+          내 티켓 보기
+        </button>
       )}
       {!showButtons && (
         <button type="button" className={styles.edit} onClick={() => setRevealed(true)}>

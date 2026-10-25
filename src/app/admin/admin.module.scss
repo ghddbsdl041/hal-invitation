@@ -17,14 +17,14 @@
     min-width: 0;
     padding: 8px 10px;
     background: #fffdf8;
-    border: 1px solid var(--color-ink-soft);
+    border: 1px solid var(--color-green);
     border-radius: var(--radius);
   }
 
   button {
     padding: 8px 14px;
     color: var(--color-paper);
-    background: var(--color-burgundy);
+    background: var(--color-purple);
     border: none;
     border-radius: var(--radius);
     cursor: pointer;
@@ -68,7 +68,7 @@
       margin-left: 6px;
       font-size: 14px;
       font-weight: 400;
-      color: var(--color-ink-soft);
+      color: var(--color-green);
     }
   }
 }
@@ -117,7 +117,7 @@
 .hint {
   margin-top: 8px;
   font-size: 13px;
-  color: var(--color-ink-soft);
+  color: var(--color-green);
 }
 
 .form {
