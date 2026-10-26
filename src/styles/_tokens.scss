@@ -9,5 +9,7 @@
   --color-error: #9b1c1c;
 
   --radius: 6px;
+  // 마우스를 올린 버튼·링크가 주황빛으로 반짝임. drop-shadow라 글자만 있는 버튼은 글자 모양대로 빛남
+  --hover-glow: brightness(1.08) drop-shadow(0 0 6px rgb(220 93 16 / 60%));
   --tap-size: 48px;
 }

@@ -148,9 +148,16 @@
   flex: 1 1 140px;
 }
 
-.candidate input[name="description"],
 .candidate input[name="map_url"] {
   flex: 2 1 180px;
+}
+
+.candidate input[type="number"] {
+  width: 90px;
+}
+
+.candidate textarea {
+  flex: 1 1 100%;
 }
 
 .check {

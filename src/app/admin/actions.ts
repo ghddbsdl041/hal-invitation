@@ -44,6 +44,15 @@ const text = (v: FormDataEntryValue | null, max = 200) => {
   return s || null;
 };
 
+// 비우면 null. 정수 여부·소수 자릿수는 DB 칸(int, numeric(2,1))이 검사
+const num = (v: FormDataEntryValue | null, max: number) => {
+  const s = String(v ?? "").trim();
+  if (!s) return null;
+  const n = Number(s);
+  if (!Number.isFinite(n) || n < 0 || n > max) throw new Error(`0~${max} 사이의 숫자로 입력해 주세요.`);
+  return n;
+};
+
 const url = (v: FormDataEntryValue | null) => {
   const s = text(v, 500);
   if (s && !/^https?:\/\//i.test(s)) throw new Error("링크는 http:// 또는 https://로 시작해야 합니다.");
@@ -80,7 +89,7 @@ export async function getAdminData() {
     db().from("event_settings").select("*").single(),
     db()
       .from("food_categories")
-      .select("id, name, display_order, is_active, food_candidates(id, name, description, map_url, display_order, is_active)")
+      .select("id, name, display_order, is_active, food_candidates(id, name, description, map_url, rating, review_count, walk, menu, display_order, is_active)")
       .order("display_order")
       .order("display_order", { referencedTable: "food_candidates" }),
     db().rpc("vote_counts"), // 참석자 표만 집계
@@ -102,7 +111,17 @@ export async function getAdminData() {
       id: number;
       name: string;
       is_active: boolean;
-      food_candidates: { id: number; name: string; description: string | null; map_url: string | null; is_active: boolean }[];
+      food_candidates: {
+        id: number;
+        name: string;
+        description: string | null;
+        map_url: string | null;
+        rating: number | null;
+        review_count: number | null;
+        walk: string | null;
+        menu: string | null;
+        is_active: boolean;
+      }[];
     }[],
     counts,
   };
@@ -138,8 +157,12 @@ export async function saveCandidate(form: FormData) {
   const row = {
     category_id: Number(form.get("category_id")),
     name,
-    description: text(form.get("description"), 200),
+    description: text(form.get("description"), 300),
     map_url: url(form.get("map_url")),
+    rating: num(form.get("rating"), 5),
+    review_count: num(form.get("review_count"), 100000),
+    walk: text(form.get("walk"), 200),
+    menu: text(form.get("menu"), 3000),
     is_active: form.get("is_active") === "on",
   };
   const id = form.get("id");

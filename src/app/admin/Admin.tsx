@@ -191,8 +191,12 @@ export default function Admin() {
                 {f && <input type="hidden" name="id" value={f.id} />}
                 <input type="hidden" name="category_id" value={c.id} />
                 <input name="name" defaultValue={f?.name ?? ""} placeholder={f ? "" : "새 식당 이름"} aria-label="식당 이름" maxLength={60} />
-                <input name="description" defaultValue={f?.description ?? ""} placeholder="설명(선택)" aria-label="설명" maxLength={200} />
                 <input name="map_url" type="url" defaultValue={f?.map_url ?? ""} placeholder="카카오맵 링크 https://" aria-label="카카오맵 링크" />
+                <input name="rating" type="number" min={0} max={5} step={0.1} defaultValue={f?.rating ?? ""} placeholder="별점" aria-label="별점(0~5)" />
+                <input name="review_count" type="number" min={0} step={1} defaultValue={f?.review_count ?? ""} placeholder="후기 수" aria-label="후기 수" />
+                <textarea name="walk" defaultValue={f?.walk ?? ""} rows={2} maxLength={200} placeholder={"거리(한 줄에 하나)\n회사에서 도보 15분(916m)"} aria-label="거리" />
+                <textarea name="menu" defaultValue={f?.menu ?? ""} rows={4} maxLength={3000} placeholder={"메뉴(한 줄에 '메뉴명 | 가격', 위 3개가 먼저 보임)\n목살 | 17,000원"} aria-label="메뉴" />
+                <textarea name="description" defaultValue={f?.description ?? ""} rows={2} maxLength={300} placeholder="평가(후기 요약)" aria-label="평가" />
                 <label className={styles.check}>
                   <input type="checkbox" name="is_active" defaultChecked={f?.is_active ?? true} /> 표시
                 </label>

@@ -14,8 +14,12 @@ export type EventSettings = {
 export type Candidate = {
   id: number;
   name: string;
-  description: string | null;
+  description: string | null; // 평가(후기 요약)
   map_url: string | null;
+  rating: number | null;
+  review_count: number | null;
+  walk: string | null; // 한 줄에 하나
+  menu: string | null; // 한 줄에 "메뉴명 | 가격"
 };
 
 export type Category = {

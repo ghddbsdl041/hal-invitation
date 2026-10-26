@@ -191,10 +191,6 @@
   border-radius: var(--radius);
   cursor: pointer;
 
-  &:enabled:hover {
-    filter: brightness(1.15);
-  }
-
   &:disabled {
     opacity: 0.6;
     cursor: default;

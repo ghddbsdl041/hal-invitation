@@ -2,12 +2,97 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { formatDeadline, safeUrl, type Category } from "@/lib/event";
+import { formatDeadline, safeUrl, type Candidate, type Category } from "@/lib/event";
 import styles from "./Details.module.scss";
 
 // 하이드레이션 전에 이미 실패한 사진은 onError가 오지 않아서 ref에서도 확인
 function hideIfBroken(img: HTMLImageElement | null) {
   if (img?.complete && !img.naturalWidth) img.parentElement!.hidden = true;
+}
+
+// 아직 받는 중인 사진만 표시해 두고(자리 깜빡임 + 도착하면 페이드), 이미 받아 둔 사진은 그대로 보여줌
+function markLoading(img: HTMLImageElement | null) {
+  if (!img) return;
+  hideIfBroken(img);
+  if (!img.complete) img.parentElement!.dataset.loading = "";
+}
+
+// 메뉴는 위에서부터 이만큼 바로 보이고 나머지는 '더 보기'로 펼침
+const MENU_PREVIEW = 3;
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <span className={styles.rating}>
+      {/* 회색 별 위에 색 별을 점수 비율만큼 덮음: 3.9점이면 넷째 별이 90% */}
+      <span className={styles.stars} aria-hidden="true">
+        ★★★★★
+        <span style={{ width: `${(rating / 5) * 100}%` }}>★★★★★</span>
+      </span>
+      <span className="sr-only">5점 만점에 </span>
+      {rating.toFixed(1)}
+      <span className="sr-only">점</span>
+    </span>
+  );
+}
+
+function MenuItems({ lines }: { lines: string[] }) {
+  return (
+    <ul className={styles.menu}>
+      {lines.map((line, i) => {
+        const [name, price] = line.split("|").map((s) => s.trim());
+        return (
+          <li key={i}>
+            <span>{name}</span>
+            {price && <span className={styles.price}>{price}</span>}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+// 줄글 대신 항목: 값 형태로 보여줘서 필요한 줄만 골라 읽을 수 있게
+function Facts({ c }: { c: Candidate }) {
+  const menu = c.menu?.split("\n").filter((l) => l.trim()) ?? [];
+  const rest = menu.slice(MENU_PREVIEW);
+  return (
+    <dl className={styles.facts}>
+      <dt>별점</dt>
+      <dd>{c.rating == null ? "카카오맵 별점 없음" : <Stars rating={c.rating} />}</dd>
+      {c.review_count != null && (
+        <>
+          <dt>후기</dt>
+          <dd>{c.review_count}개</dd>
+        </>
+      )}
+      {c.walk && (
+        <>
+          <dt>거리</dt>
+          <dd className={styles.lines}>{c.walk}</dd>
+        </>
+      )}
+      {menu.length > 0 && (
+        <>
+          <dt>메뉴</dt>
+          <dd>
+            <MenuItems lines={menu.slice(0, MENU_PREVIEW)} />
+            {rest.length > 0 && (
+              <details className={styles.more}>
+                <summary>메뉴 {rest.length}개 더 보기</summary>
+                <MenuItems lines={rest} />
+              </details>
+            )}
+          </dd>
+        </>
+      )}
+      {c.description && (
+        <>
+          <dt>평가</dt>
+          <dd>{c.description}</dd>
+        </>
+      )}
+    </dl>
+  );
 }
 
 type Props = {
@@ -112,21 +197,30 @@ export default function FoodBoard({
                         alt=""
                         fill
                         sizes="(min-width: 1280px) 320px, 90vw"
-                        ref={hideIfBroken}
+                        ref={markLoading}
+                        onLoad={(e) => delete e.currentTarget.parentElement!.dataset.loading}
                         onError={(e) => hideIfBroken(e.currentTarget)}
                       />
                     </div>
                     <div className={styles.candidateText}>
-                      <strong>{c.name}</strong>
-                      {c.description && <span className={styles.sub}>{c.description}</span>}
-                      {mapUrl && (
-                        <a className={styles.mapLink} href={mapUrl} target="_blank" rel="noopener noreferrer">
-                          카카오맵
-                        </a>
-                      )}
+                      <div className={styles.nameRow}>
+                        <strong>{c.name}</strong>
+                        {mapUrl && (
+                          <a className={styles.mapLink} href={mapUrl} target="_blank" rel="noopener noreferrer">
+                            카카오맵
+                          </a>
+                        )}
+                      </div>
+                      <Facts c={c} />
                     </div>
                     <div className={styles.voteBox}>
-                      <span className={styles.count}>{counts[c.id] ?? 0}표</span>
+                      <span className={styles.count}>
+                        {/* 숫자가 바뀌면 다시 마운트돼 아래에서 굴러 올라옴 */}
+                        <span key={counts[c.id] ?? 0} className={styles.countNumber}>
+                          {counts[c.id] ?? 0}
+                        </span>
+                        표
+                      </span>
                       {canVote ? (
                         <button
                           type="button"

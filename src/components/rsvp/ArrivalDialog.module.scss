@@ -11,6 +11,56 @@
   &::backdrop {
     background: rgb(20 8 8 / 60%);
   }
+
+  // 열릴 때 살짝 커지며 나타나고 배경이 서서히 어두워짐
+  @media (prefers-reduced-motion: no-preference) {
+    &[open] {
+      animation: dialog-in 0.2s ease-out;
+
+      &::backdrop {
+        animation: backdrop-in 0.2s ease-out;
+      }
+    }
+
+    // 닫힐 때: overlay를 지원하는 브라우저만 최상위 레이어에 남겨 둔 채 사라지게 함.
+    // 그동안 배경(::backdrop)이 클릭을 받아서 아래 화면이 눌리지 않음
+    @supports (overlay: auto) {
+      transition:
+        opacity 0.15s ease-in,
+        scale 0.15s ease-in,
+        display 0.15s allow-discrete,
+        overlay 0.15s allow-discrete;
+
+      &:not([open]) {
+        opacity: 0;
+        scale: 0.96;
+      }
+
+      &::backdrop {
+        transition:
+          opacity 0.15s ease-in,
+          display 0.15s allow-discrete,
+          overlay 0.15s allow-discrete;
+      }
+
+      &:not([open])::backdrop {
+        opacity: 0;
+      }
+    }
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .form {
@@ -78,6 +128,17 @@
   input:checked + span {
     color: var(--color-paper);
     background: var(--color-purple);
+
+    // 고른 칸이 톡 튀어 나타남
+    @media (prefers-reduced-motion: no-preference) {
+      animation: pop 0.25s ease-out;
+    }
+  }
+
+  @media (hover: hover) {
+    span:hover {
+      filter: var(--hover-glow);
+    }
   }
 
   input:focus-visible + span {
@@ -123,4 +184,10 @@
   line-height: 1.5;
   color: var(--color-error);
   word-break: keep-all;
+}
+
+@keyframes pop {
+  50% {
+    scale: 1.06;
+  }
 }

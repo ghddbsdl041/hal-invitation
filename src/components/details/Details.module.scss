@@ -136,10 +136,12 @@
   }
 }
 
-// 칸이 좁으면(2단 편지지의 오른쪽 단 등) 투표 영역이 설명 아래로 내려감
+// 사진 / 가게명·설명 / 투표 영역이 각각 한 줄씩
 .candidate {
   display: flex;
   flex-wrap: wrap;
+  // 옆 카드가 메뉴를 펼쳐 칸이 길어져도 내용은 위에 붙어 있게
+  align-content: flex-start;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -157,29 +159,158 @@
 .photo {
   position: relative;
   flex: 0 0 100%;
-  height: 180px;
+  // 가게 사진이 대부분 정사각형에 가까워서 잘리지 않도록
+  aspect-ratio: 1;
   overflow: hidden;
   border-radius: var(--radius);
 
   img {
     object-fit: cover;
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    img {
+      transition: opacity 0.25s ease-out;
+    }
+
+    &[data-loading] {
+      background: rgb(116 107 42 / 15%);
+      animation: breathe 1.4s ease-in-out infinite;
+
+      img {
+        opacity: 0;
+      }
+    }
+  }
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .candidateText {
   display: flex;
-  flex: 1 1 150px;
+  flex: 0 0 100%;
   flex-direction: column;
   min-width: 0;
   font-size: 18px;
   word-break: keep-all;
 }
 
+// 가게 이름이 길면 카카오맵 링크가 다음 줄로
+.nameRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 8px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 12px;
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+
+  dt {
+    font-weight: 700;
+    color: var(--color-green);
+  }
+
+  dd {
+    min-width: 0;
+  }
+}
+
+.lines {
+  white-space: pre-line;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stars {
+  position: relative;
+  display: inline-block;
+  color: rgb(116 107 42 / 25%);
+  letter-spacing: 1px;
+  white-space: nowrap;
+
+  span {
+    position: absolute;
+    inset: 0 auto 0 0;
+    overflow: hidden;
+    color: #871b25; // 투표 버튼 배경색
+  }
+}
+
+.menu {
+  list-style: none;
+
+  li {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+
+    &::before {
+      content: "•";
+      color: var(--color-green);
+    }
+
+    span:first-of-type {
+      flex: 1;
+    }
+  }
+}
+
+.price {
+  white-space: nowrap;
+}
+
+.more {
+  summary {
+    width: fit-content;
+    margin: 2px 0;
+    font-size: 14px;
+    color: var(--color-purple);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+
+    @media (hover: hover) {
+      &:hover {
+        filter: var(--hover-glow);
+      }
+    }
+  }
+
+  // 펼칠 때 살짝 내려오며 나타남
+  &[open] > ul {
+    @media (prefers-reduced-motion: no-preference) {
+      animation: menu-in 0.2s ease-out;
+    }
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+}
+
+// 투표 수는 왼쪽, 버튼은 오른쪽
 .voteBox {
   display: flex;
-  flex-shrink: 0;
-  margin-left: auto;
+  flex: 0 0 100%;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
@@ -187,6 +318,21 @@
   font-size: 21px;
   // color: var(--color-green);\
   color: var(--color-purple);
+}
+
+.countNumber {
+  display: inline-block;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: roll-in 0.3s ease-out;
+  }
+}
+
+@keyframes roll-in {
+  from {
+    opacity: 0;
+    translate: 0 0.6em;
+  }
 }
 
 .voteButton {
@@ -206,6 +352,11 @@
   &[aria-pressed="true"] {
     color: #5c1018;
     background: #fffdf8;
+
+    // 투표하면 톡 튐
+    @media (prefers-reduced-motion: no-preference) {
+      animation: pop 0.25s ease-out;
+    }
   }
 
   &:disabled,
@@ -225,4 +376,10 @@
   font-size: 14px;
   text-align: center;
   color: var(--color-error);
+}
+
+@keyframes pop {
+  50% {
+    scale: 1.1;
+  }
 }

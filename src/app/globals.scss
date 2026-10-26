@@ -27,6 +27,19 @@ a {
   text-decoration: none;
 }
 
+// 누를 수 있는 요소는 손 모양 커서, 마우스를 올리면 반짝임
+button:enabled:not([aria-disabled="true"]),
+a[href] {
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  button:enabled:not([aria-disabled="true"]):hover,
+  a[href]:hover {
+    filter: var(--hover-glow);
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -34,4 +47,30 @@ a {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+// 누르는 순간 살짝 작아지고, 오류 문구(role="alert")는 살짝 내려오며 나타남
+// scale·translate 속성은 transform과 따로 적용돼서 버튼의 기존 transform(불참 버튼 이동 등)과 겹치지 않음
+@media (prefers-reduced-motion: no-preference) {
+  button,
+  a[href] {
+    transition:
+      scale 0.1s ease-out,
+      filter 0.15s ease-out;
+  }
+
+  button:active:enabled:not([aria-disabled="true"]) {
+    scale: 0.96;
+  }
+
+  [role="alert"] {
+    animation: alert-in 0.2s ease-out;
+  }
+}
+
+@keyframes alert-in {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
 }

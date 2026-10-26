@@ -49,6 +49,13 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
       .slice(0, NICKNAME_MAX);
     if (!value) {
       setError(true);
+      // 비운 채로 다시 눌러도 매번 흔들리도록 CSS 클래스 대신 한 번짜리 애니메이션
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        inputRef.current?.animate(
+          { translate: ["0", "-6px", "6px", "-4px", "4px", "0"] },
+          { duration: 300, easing: "ease-out" },
+        );
+      }
       return;
     }
     setNickname(value);

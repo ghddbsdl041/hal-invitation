@@ -21,7 +21,7 @@ export async function loadPublic() {
       .single(),
     supabase()
       .from("food_categories")
-      .select("id, name, food_candidates(id, name, description, map_url)")
+      .select("id, name, food_candidates(id, name, description, map_url, rating, review_count, walk, menu)")
       .order("display_order")
       .order("display_order", { referencedTable: "food_candidates" }),
     supabase().rpc("vote_counts"),
