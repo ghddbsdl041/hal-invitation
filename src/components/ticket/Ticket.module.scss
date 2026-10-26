@@ -176,15 +176,15 @@ $notch: 14px;
 }
 
 .title {
-  font-family: var(--font-display), serif;
-  font-size: 32px; // 제목 글꼴(--font-display)이 넓어 36px면 절취선을 넘음
+  font-family: var(--font-ticket-title), sans-serif;
+  font-size: 36px;
   line-height: 1.1;
   color: var(--color-orange);
   white-space: nowrap;
   text-shadow: 2px 3px 0 rgb(34 32 35 / 18%);
 
   @media (max-width: 639px) {
-    font-size: 22px;
+    font-size: 23px;
   }
 }
 
