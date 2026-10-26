@@ -13,6 +13,7 @@ import Ticket from "./ticket/Ticket";
 import styles from "./Invitation.module.scss";
 
 type Step = "letter" | "ticket" | "final";
+const POLL_MS = 15_000;
 // 편지로 돌아올 때 보여줄 위치
 type Focus = "top" | "rsvp" | "food";
 
@@ -49,6 +50,14 @@ export default function Invitation() {
     if (!nickname || !response || response.nickname === nickname) return;
     submitResponse(nickname, response.attendance_status, response.arrival_time).then(setResponse, () => {});
   }, [nickname, response]);
+
+  // 다른 사람의 표도 반영되도록 화면을 보고 있는 동안 주기적으로 다시 불러옴 (실패해도 화면은 그대로 둠)
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (document.visibilityState === "visible") loadPublic().then(setPub, () => {});
+    }, POLL_MS);
+    return () => clearInterval(id);
+  }, []);
 
   function go(next: Step, at: Focus = "top", attended = false) {
     if (at === "top") window.scrollTo(0, 0);
@@ -103,7 +112,7 @@ export default function Invitation() {
       side={
         pub ? (
           <>
-            <EventInfo settings={pub.settings} />
+            <EventInfo settings={pub.settings} categories={pub.categories} counts={pub.counts} />
             <FoodBoard
               categories={pub.categories}
               counts={pub.counts}

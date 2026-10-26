@@ -8,7 +8,7 @@
 .heading {
   font-family: var(--font-display), serif;
   margin-bottom: 16px;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   text-align: center;
   outline: none;
@@ -22,7 +22,7 @@
   gap: 10px 16px;
   margin-bottom: 16px;
   padding: 14px 16px;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.6;
   text-align: center;
   // background: rgb(200 85 46 / 10%);
@@ -40,7 +40,7 @@
   height: 44px;
   padding: 0 18px;
   font: inherit;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--color-paper);
   background: #c8552e;
@@ -59,7 +59,7 @@
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 10px 16px;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.6;
 
   dt {
@@ -76,16 +76,68 @@
   }
 }
 
+// 장소 자리의 실시간 1위: 깜빡이는 빨간 점 + LIVE
+.live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 8px;
+  padding: 1px 8px;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: var(--color-paper);
+  vertical-align: 2px;
+  background: var(--color-purple);
+  border-radius: 10px;
+
+  &[data-closed="false"]::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    background: #ff5a4e;
+    border-radius: 50%;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: blink 1.2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.leader {
+  display: inline-block;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: leader-in 0.4s ease-out;
+  }
+}
+
+@keyframes leader-in {
+  0% {
+    opacity: 0;
+    scale: 0.8;
+  }
+
+  60% {
+    scale: 1.08;
+  }
+}
+
 .sub {
   display: block;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-green);
 }
 
 .mapLink {
   display: inline-block;
   margin-top: 2px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-purple);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -93,7 +145,7 @@
 
 .notice {
   margin-top: 16px;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.7;
   white-space: pre-line;
   word-break: keep-all;
@@ -101,7 +153,7 @@
 
 .guide {
   margin-bottom: 16px;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.6;
   text-align: center;
   color: var(--color-green);
@@ -114,12 +166,12 @@
 
 .categoryName {
   margin-bottom: 8px;
-  font-size: 25px;
+  font-size: 27px;
   font-weight: 700;
 }
 
 .empty {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-green);
 }
 
@@ -139,11 +191,7 @@
 // 사진 / 가게명·설명 / 투표 영역이 각각 한 줄씩
 .candidate {
   display: flex;
-  flex-wrap: wrap;
-  // 옆 카드가 메뉴를 펼쳐 칸이 길어져도 내용은 위에 붙어 있게
-  align-content: flex-start;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 12px;
   padding: 12px 14px;
   background: rgb(255 253 248 / 70%);
@@ -158,7 +206,6 @@
 
 .photo {
   position: relative;
-  flex: 0 0 100%;
   // 가게 사진이 대부분 정사각형에 가까워서 잘리지 않도록
   aspect-ratio: 1;
   overflow: hidden;
@@ -192,10 +239,9 @@
 
 .candidateText {
   display: flex;
-  flex: 0 0 100%;
   flex-direction: column;
   min-width: 0;
-  font-size: 18px;
+  font-size: 20px;
   word-break: keep-all;
 }
 
@@ -212,7 +258,7 @@
   grid-template-columns: auto 1fr;
   gap: 6px 12px;
   margin-top: 8px;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.5;
 
   dt {
@@ -277,7 +323,7 @@
   summary {
     width: fit-content;
     margin: 2px 0;
-    font-size: 14px;
+    font-size: 16px;
     color: var(--color-purple);
     text-decoration: underline;
     text-underline-offset: 3px;
@@ -306,16 +352,17 @@
 }
 
 // 투표 수는 왼쪽, 버튼은 오른쪽
+// 옆 카드보다 내용이 짧거나 메뉴를 펼쳐 칸이 길어져도 투표 줄은 카드 바닥에
 .voteBox {
   display: flex;
-  flex: 0 0 100%;
+  margin-top: auto;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
 
 .count {
-  font-size: 21px;
+  font-size: 23px;
   // color: var(--color-green);\
   color: var(--color-purple);
 }
@@ -340,7 +387,7 @@
   height: 40px;
   padding: 0 12px;
   font: inherit;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--color-paper);
   background: #871b25;
@@ -373,7 +420,7 @@
 
 .error {
   margin-top: 12px;
-  font-size: 14px;
+  font-size: 16px;
   text-align: center;
   color: var(--color-error);
 }

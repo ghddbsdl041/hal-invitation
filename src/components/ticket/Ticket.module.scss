@@ -177,25 +177,25 @@ $notch: 14px;
 
 .title {
   font-family: var(--font-ticket-title), sans-serif;
-  font-size: 36px;
+  font-size: 36px; // 38px면 'HAPPY HALLOWEEN'(418px)이 본문 폭(404px)을 넘어 글자 키울 때 제외
   line-height: 1.1;
   color: var(--color-orange);
   white-space: nowrap;
   text-shadow: 2px 3px 0 rgb(34 32 35 / 18%);
 
   @media (max-width: 639px) {
-    font-size: 23px;
+    font-size: 25px;
   }
 }
 
 .holder {
   margin-top: 14px;
-  font-size: 24px;
+  font-size: 26px;
   letter-spacing: 0.02em;
   overflow-wrap: anywhere;
 
   @media (max-width: 639px) {
-    font-size: 20px;
+    font-size: 22px;
   }
 }
 
@@ -213,17 +213,17 @@ $notch: 14px;
 
 .date,
 .arrival {
-  font-size: 28px;
+  font-size: 30px;
   line-height: 1.25;
 
   @media (max-width: 639px) {
-    font-size: 22px;
+    font-size: 24px;
   }
 }
 
 .venue {
   margin-top: 6px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--color-green);
 }
 
@@ -254,17 +254,17 @@ $notch: 14px;
 
 .no {
   width: 100%;
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.15em;
   color: var(--color-green);
 }
 
 .stubText {
-  font-size: 26px;
+  font-size: 28px;
   line-height: 1.25;
 
   @media (max-width: 639px) {
-    font-size: 19px;
+    font-size: 21px;
   }
 }
 
@@ -295,7 +295,7 @@ $notch: 14px;
   height: 52px;
   padding: 0 24px;
   font: inherit;
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 700;
   color: var(--color-ink);
   background: var(--color-paper);
@@ -318,7 +318,7 @@ $notch: 14px;
 .link {
   padding: 8px 4px;
   font: inherit;
-  font-size: 17px;
+  font-size: 19px;
   color: var(--color-paper);
   background: none;
   border: none;
@@ -341,7 +341,7 @@ $notch: 14px;
   min-height: 1.5em;
   margin-top: 12px;
   padding: 0 8px;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--color-paper);
   background: var(--color-error);
   border-radius: var(--radius);

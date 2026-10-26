@@ -174,7 +174,9 @@ export default function FoodBoard({
         {closed
           ? "투표가 마감되었습니다."
           : attending
-            ? `한 곳에 투표해 주세요. 마감 전까지 바꿀 수 있습니다. (마감: ${formatDeadline(deadline)})`
+            ? myVote === null
+              ? `한 곳에 투표해 주세요. (마감: ${formatDeadline(deadline)})`
+              : `다른 곳에 투표하려면 먼저 투표를 취소해 주세요. (마감: ${formatDeadline(deadline)})`
             : `참석을 확정하신 분만 투표할 수 있습니다. (마감: ${formatDeadline(deadline)})`}
       </p>
 
@@ -221,7 +223,12 @@ export default function FoodBoard({
                         </span>
                         표
                       </span>
-                      {canVote ? (
+                      {canVote && myVote !== null && !mine ? (
+                        // 이미 다른 곳에 투표했으면 취소한 뒤에만 고를 수 있음
+                        <button type="button" className={styles.voteButton} disabled>
+                          투표
+                        </button>
+                      ) : canVote ? (
                         <button
                           type="button"
                           className={styles.voteButton}

@@ -63,6 +63,7 @@ export default function Admin() {
 
   const { responses, settings, categories, counts } = data;
   const attending = responses.filter((r) => r.attendance_status === "attending");
+  const candidateName = new Map(categories.flatMap((c) => c.food_candidates.map((f) => [f.id, f.name])));
   const totalVotes = Object.values(counts).reduce((a, b) => a + b, 0);
   const closed = new Date(settings.voting_deadline!).getTime() <= Date.parse(new Date().toISOString());
   const ranking = categories
@@ -93,6 +94,7 @@ export default function Admin() {
                 <th>닉네임</th>
                 <th>응답</th>
                 <th>도착</th>
+                <th>투표</th>
                 <th>처음 응답</th>
                 <th>마지막 수정</th>
               </tr>
@@ -104,13 +106,14 @@ export default function Admin() {
                   <td>{r.nickname}</td>
                   <td>{r.attendance_status === "attending" ? "참석" : "불참"}</td>
                   <td>{r.arrival_time ?? "-"}</td>
+                  <td>{r.food_votes ? (candidateName.get(r.food_votes.candidate_id) ?? "(삭제된 후보)") : "-"}</td>
                   <td>{KST.format(new Date(r.created_at))}</td>
                   <td>{KST.format(new Date(r.updated_at))}</td>
                 </tr>
               ))}
               {responses.length === 0 && (
                 <tr>
-                  <td colSpan={6}>아직 응답이 없습니다.</td>
+                  <td colSpan={7}>아직 응답이 없습니다.</td>
                 </tr>
               )}
             </tbody>

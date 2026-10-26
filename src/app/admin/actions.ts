@@ -85,7 +85,10 @@ export async function getAdminData() {
     return null;
   }
   const [responses, settings, categories, votes] = await Promise.all([
-    db().from("responses").select("nickname, attendance_status, arrival_time, ticket_no, created_at, updated_at").order("created_at"),
+    db()
+      .from("responses")
+      .select("nickname, attendance_status, arrival_time, ticket_no, created_at, updated_at, food_votes(candidate_id)")
+      .order("created_at"),
     db().from("event_settings").select("*").single(),
     db()
       .from("food_categories")
@@ -98,13 +101,15 @@ export async function getAdminData() {
     (check(votes) as { candidate_id: number; votes: number }[]).map((v) => [v.candidate_id, Number(v.votes)]),
   ) as Record<number, number>;
   return {
-    responses: check(responses) as {
+    // food_votes.user_id가 기본키(1:1)라 실제로는 배열이 아닌 객체 하나가 옴. 타입 추론은 배열로 봐서 unknown을 거침
+    responses: check(responses) as unknown as {
       nickname: string;
       attendance_status: "attending" | "declined";
       arrival_time: string | null;
       ticket_no: number;
       created_at: string;
       updated_at: string;
+      food_votes: { candidate_id: number } | null; // 사용자당 1표라 객체 하나
     }[],
     settings: check(settings) as Record<string, string | null>,
     categories: check(categories) as {

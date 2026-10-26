@@ -27,7 +27,6 @@ const decorations = (
 
 export default function Letter({ nickname, focusTitle = true, side, children }: Props) {
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const name = <span className={styles.name}>{nickname}님</span>;
   // 마운트 때 한 번만 (ref 콜백으로 하면 투표 등으로 다시 그릴 때마다 포커스를 빼앗음)
   useEffect(() => {
     if (focusTitle) titleRef.current?.focus({ preventScroll: true });
@@ -43,14 +42,16 @@ export default function Letter({ nickname, focusTitle = true, side, children }: 
 
           {/* 봉투에서 넘어왔을 때 스크린리더·키보드 포커스를 편지 시작점으로 */}
           <h1 className={styles.title} tabIndex={-1} ref={titleRef}>
-            이 계절의 만찬에 {name}을 초대합니다.
+            이 계절의 만찬에 {nickname}님을 초대합니다.
           </h1>
           <div className={styles.body}>
             {/* 문구는 그대로 두고, 요점은 형광펜(mark), 농담은 손글씨 메모(.memo)로 따로 보여줌 */}
-            <p>존경하는 {name}께.</p>
+            <p>
+              존경하는 <span className={styles.name}>{nickname}님</span>께.
+            </p>
             <p>평안하신지요.</p>
             <p className={styles.dropcap}>
-              달이 높이 떠오르고 밤공기가 서늘해지는 계절, {name}과 함께 특별한 저녁을 보내고자 이 편지를
+              달이 높이 떠오르고 밤공기가 서늘해지는 계절, {nickname}님과 함께 특별한 저녁을 보내고자 이 편지를
               보냅니다.
             </p>
             <p>
@@ -69,7 +70,7 @@ export default function Letter({ nickname, focusTitle = true, side, children }: 
               <mark>함께 식사할 사람을 모으는 일</mark>은 이 편지로 해결할 수 있을 듯합니다.
             </p>
             <p>
-              <mark>부디 참석 여부를 알려 주십시오.</mark> {name}의 선택은 전적으로 존중됩니다. 참석하신다면
+              <mark>부디 참석 여부를 알려 주십시오.</mark> {nickname}님의 선택은 전적으로 존중됩니다. 참석하신다면
               기쁜 마음으로 맞이하겠습니다. 불참하신다면 그 또한 이해하겠습니다.
             </p>
             <p>참석 여부는 자유롭게 결정해 주십시오.</p>
@@ -80,7 +81,7 @@ export default function Letter({ nickname, focusTitle = true, side, children }: 
               그날의 식탁이 얼마나 근사할지는 아직 알 수 없으나, 함께할 사람이 있다는 사실만큼은 미리 기뻐해
               두겠습니다.
             </p>
-            <p className={styles.closing}>{name}의 답신을 기다리며,</p>
+            <p className={styles.closing}>{nickname}님의 답신을 기다리며,</p>
             <p className={styles.sign}>만찬 주최자 올림</p>
           </div>
         </div>

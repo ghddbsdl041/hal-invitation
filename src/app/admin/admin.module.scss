@@ -2,14 +2,14 @@
   max-width: 960px;
   margin: 0 auto;
   padding: 24px 16px 64px;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--color-ink);
 
   input,
   textarea,
   button {
     font: inherit;
-    font-size: 15px;
+    font-size: 17px;
   }
 
   input,
@@ -42,7 +42,7 @@
   color: var(--color-paper);
 
   h1 {
-    font-size: 24px;
+    font-size: 26px;
   }
 }
 
@@ -62,11 +62,11 @@
 
   h2 {
     margin-bottom: 12px;
-    font-size: 18px;
+    font-size: 20px;
 
     small {
       margin-left: 6px;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 400;
       color: var(--color-green);
     }
@@ -81,7 +81,7 @@
   margin: 15vh auto 0;
 
   h1 {
-    font-size: 22px;
+    font-size: 24px;
   }
 }
 
@@ -116,7 +116,7 @@
 
 .hint {
   margin-top: 8px;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--color-green);
 }
 
