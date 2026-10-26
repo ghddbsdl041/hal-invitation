@@ -176,7 +176,7 @@ export default function FoodBoard({
           : attending
             ? myVote === null
               ? `한 곳에 투표해 주세요. (마감: ${formatDeadline(deadline)})`
-              : `다른 곳에 투표하려면 먼저 투표를 취소해 주세요. (마감: ${formatDeadline(deadline)})`
+              : `다른 가게의 '여기로 변경'을 누르면 투표가 옮겨집니다. (마감: ${formatDeadline(deadline)})`
             : `참석을 확정하신 분만 투표할 수 있습니다. (마감: ${formatDeadline(deadline)})`}
       </p>
 
@@ -223,12 +223,7 @@ export default function FoodBoard({
                         </span>
                         표
                       </span>
-                      {canVote && myVote !== null && !mine ? (
-                        // 이미 다른 곳에 투표했으면 취소한 뒤에만 고를 수 있음
-                        <button type="button" className={styles.voteButton} disabled>
-                          투표
-                        </button>
-                      ) : canVote ? (
+                      {canVote ? (
                         <button
                           type="button"
                           className={styles.voteButton}
@@ -237,7 +232,8 @@ export default function FoodBoard({
                           aria-disabled={pending}
                           onClick={() => !pending && run(() => (mine ? onCancel() : onVote(c.id)))}
                         >
-                          {mine ? "투표 취소" : "투표"}
+                          {/* 이미 투표했으면 다른 가게 버튼은 표를 바로 옮김 (cast_vote가 사용자당 1표로 덮어씀) */}
+                          {mine ? "투표 취소" : myVote === null ? "투표" : "여기로 변경"}
                         </button>
                       ) : (
                         !closed && (
