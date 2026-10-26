@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { ArrivalTime, SavedResponse } from "@/lib/event";
+import { formatDeadline, type ArrivalTime, type SavedResponse } from "@/lib/event";
 import ArrivalDialog from "./ArrivalDialog";
 import styles from "./Rsvp.module.scss";
 
@@ -15,6 +15,8 @@ type Phase = "ready" | "dodging" | "escaping" | "waiting" | "armed";
 
 type Props = {
   saved: SavedResponse | null;
+  // 투표 마감과 같은 시각에 회신도 마감 (예약 인원 확정). 불러오기 전에는 undefined
+  deadline?: string;
   // 응답 수정으로 돌아왔을 때 이 영역을 화면 가운데로
   scrollIntoView?: boolean;
   onAttend: (time: ArrivalTime) => Promise<void>;
@@ -22,15 +24,23 @@ type Props = {
   onTicket: () => void;
 };
 
-export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDecline, onTicket }: Props) {
+export default function Rsvp({ saved, deadline, scrollIntoView = false, onAttend, onDecline, onTicket }: Props) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  // 편지를 연 뒤에만 그려지므로 렌더 중 시각을 읽어도 됨. 15초마다 갱신해 마감을 화면에 반영 (서버도 마감 뒤 회신을 거절)
+  const [now, setNow] = useState(() => Date.now());
+  const closed = !!deadline && now >= Date.parse(deadline);
+  useEffect(() => {
+    if (closed) return;
+    const id = setInterval(() => setNow(Date.now()), 15_000);
+    return () => clearInterval(id);
+  }, [closed]);
   const [phase, setPhase] = useState<Phase>("ready");
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [declining, setDeclining] = useState(false);
   const [declineError, setDeclineError] = useState<string | null>(null);
   // 이미 응답했으면 버튼을 숨기고 현재 응답만 표시. 수정은 티켓·마지막 화면의 '응답 수정'(scrollIntoView)이나 여기서 펼쳐서
   const [revealed, setRevealed] = useState(false);
-  const showButtons = !saved || scrollIntoView || revealed;
+  const showButtons = !closed && (!saved || scrollIntoView || revealed);
   const rootRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
   const attendRef = useRef<HTMLButtonElement>(null);
@@ -131,6 +141,7 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
   return (
     <div className={styles.rsvp} ref={rootRef}>
       <h2 className={styles.heading}>회신</h2>
+      {deadline && !closed && <p className={styles.deadline}>회신 마감: {formatDeadline(deadline)}</p>}
       {saved && (
         <p className={styles.current}>
           현재 응답:{" "}
@@ -142,7 +153,14 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
           내 티켓 보기
         </button>
       )}
-      {!showButtons && (
+      {closed && (
+        <p className={styles.closed}>
+          회신이 마감되었습니다.
+          <br />
+          불가피하게 불참하시게 되면 주최자에게 따로 연락 부탁드립니다.
+        </p>
+      )}
+      {!closed && !showButtons && (
         <button type="button" className={styles.edit} onClick={() => setRevealed(true)}>
           응답 수정하기
         </button>

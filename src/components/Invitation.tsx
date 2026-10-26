@@ -147,6 +147,7 @@ export default function Invitation() {
     >
       <Rsvp
         saved={response}
+        deadline={pub?.settings.voting_deadline}
         scrollIntoView={focus === "rsvp"}
         onAttend={async (arrival) => {
           setResponse(await submitResponse(nickname, "attending", arrival));
