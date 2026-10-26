@@ -97,7 +97,6 @@ function Facts({ c }: { c: Candidate }) {
 
 type Props = {
   categories: Category[];
-  counts: Record<number, number>;
   myVote: number | null;
   attending: boolean;
   deadline: string;
@@ -111,7 +110,6 @@ type Props = {
 
 export default function FoodBoard({
   categories,
-  counts,
   myVote,
   attending,
   deadline,
@@ -216,13 +214,6 @@ export default function FoodBoard({
                       <Facts c={c} />
                     </div>
                     <div className={styles.voteBox}>
-                      <span className={styles.count}>
-                        {/* 숫자가 바뀌면 다시 마운트돼 아래에서 굴러 올라옴 */}
-                        <span key={counts[c.id] ?? 0} className={styles.countNumber}>
-                          {counts[c.id] ?? 0}
-                        </span>
-                        표
-                      </span>
                       {canVote ? (
                         <button
                           type="button"

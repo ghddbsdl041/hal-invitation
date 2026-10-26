@@ -384,35 +384,14 @@
   }
 }
 
-// 투표 수는 왼쪽, 버튼은 오른쪽
+// 투표 버튼은 오른쪽 (표 수는 궁금하게 숨김)
 // 옆 카드보다 내용이 짧거나 메뉴를 펼쳐 칸이 길어져도 투표 줄은 카드 바닥에
 .voteBox {
   display: flex;
   margin-top: auto;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 10px;
-}
-
-.count {
-  font-size: 23px;
-  // color: var(--color-green);\
-  color: var(--color-purple);
-}
-
-.countNumber {
-  display: inline-block;
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: roll-in 0.3s ease-out;
-  }
-}
-
-@keyframes roll-in {
-  from {
-    opacity: 0;
-    translate: 0 0.6em;
-  }
 }
 
 .voteButton {

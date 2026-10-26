@@ -31,7 +31,8 @@ function Leader({ categories, counts, closed }: Omit<Props, "settings"> & { clos
         {leaders.map((c) => c.name).join(" · ")}
       </strong>
       <span className={styles.sub}>
-        {max}표 · 득표율 {Math.round((max / total) * 100)}%
+        {/* 궁금하게 표 수는 숨기고 득표율만 */}
+        득표율 {Math.round((max / total) * 100)}%
         {closed ? "" : " — 투표 마감까지 득표에 따라 바뀝니다."}
       </span>
     </>

@@ -115,7 +115,6 @@ export default function Invitation() {
             <EventInfo settings={pub.settings} categories={pub.categories} counts={pub.counts} />
             <FoodBoard
               categories={pub.categories}
-              counts={pub.counts}
               myVote={attending ? vote : null}
               attending={attending}
               deadline={pub.settings.voting_deadline}
