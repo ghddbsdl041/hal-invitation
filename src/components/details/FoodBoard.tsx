@@ -17,6 +17,16 @@ function markLoading(img: HTMLImageElement | null) {
   if (!img.complete) img.parentElement!.dataset.loading = "";
 }
 
+// 남은 시간: 하루 이상이면 "1일 02:13:05", 아니면 "02:13:05"
+function formatLeft(ms: number) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  const d = Math.floor(s / 86400);
+  const hms = [Math.floor(s / 3600) % 24, Math.floor(s / 60) % 60, s % 60]
+    .map((n) => String(n).padStart(2, "0"))
+    .join(":");
+  return d > 0 ? `${d}일 ${hms}` : hms;
+}
+
 // 메뉴는 위에서부터 이만큼 바로 보이고 나머지는 '더 보기'로 펼침
 const MENU_PREVIEW = 3;
 
@@ -123,9 +133,15 @@ export default function FoodBoard({
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // 마감 여부는 서버(cast_vote)에서 다시 검사. 화면은 안내용이라 화면을 연 시각 기준으로 충분
-  const [openedAt] = useState(() => Date.now());
-  const closed = openedAt >= new Date(deadline).getTime();
+  // 카운트다운용으로 1초마다 갱신. 마감 여부는 서버(cast_vote)에서 다시 검사하고, 화면은 0이 되는 순간 마감으로 바뀜
+  const [now, setNow] = useState(() => Date.now());
+  const left = new Date(deadline).getTime() - now;
+  const closed = left <= 0;
+  useEffect(() => {
+    if (closed) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [closed]);
   const canVote = attending && !closed;
 
   useEffect(() => {
@@ -168,14 +184,24 @@ export default function FoodBoard({
           </button>
         </div>
       )}
+      {!closed && (
+        <p className={styles.countdown}>
+          <span className={styles.countdownLabel}>투표 마감까지</span>
+          {/* 1초마다 바뀌므로 스크린리더에는 마감 시각만 */}
+          <span className={styles.countdownTime} aria-hidden="true">
+            {formatLeft(left)}
+          </span>
+          <span className={styles.countdownAt}>마감 {formatDeadline(deadline)}</span>
+        </p>
+      )}
       <p className={styles.guide}>
         {closed
           ? "투표가 마감되었습니다."
           : attending
             ? myVote === null
-              ? `한 곳에 투표해 주세요. (마감: ${formatDeadline(deadline)})`
-              : `다른 가게의 '여기로 변경'을 누르면 투표가 옮겨집니다. (마감: ${formatDeadline(deadline)})`
-            : `참석을 확정하신 분만 투표할 수 있습니다. (마감: ${formatDeadline(deadline)})`}
+              ? "한 곳에 투표해 주세요."
+              : "다른 가게의 '여기로 변경'을 누르면 투표가 옮겨집니다."
+            : "참석을 확정하신 분만 투표할 수 있습니다."}
       </p>
 
       {categories.map((category) => (

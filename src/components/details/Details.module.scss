@@ -151,6 +151,39 @@
   word-break: keep-all;
 }
 
+// 투표 마감 카운트다운: 숫자가 흔들리지 않게 고정폭 숫자
+.countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: fit-content;
+  margin: 0 auto 12px;
+  padding: 10px 22px 8px;
+  color: var(--color-paper);
+  background: var(--color-purple);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
+}
+
+.countdownLabel {
+  font-size: 15px;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+}
+
+.countdownTime {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdownAt {
+  font-size: 14px;
+  opacity: 0.75;
+}
+
 .guide {
   margin-bottom: 16px;
   font-size: 17px;
