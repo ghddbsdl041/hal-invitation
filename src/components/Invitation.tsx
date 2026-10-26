@@ -43,6 +43,13 @@ export default function Invitation() {
     );
   }, []);
 
+  // 이미 회신한 사람이 봉투에 다른 이름을 적으면 저장된 이름도 바꿔 편지·티켓 이름을 맞춤 (참석 여부·시간·투표는 그대로)
+  // 응답을 봉투 연 뒤에 불러와도 되도록 둘 다 준비됐을 때 비교. 실패하면 다음 회신 때 바뀜
+  useEffect(() => {
+    if (!nickname || !response || response.nickname === nickname) return;
+    submitResponse(nickname, response.attendance_status, response.arrival_time).then(setResponse, () => {});
+  }, [nickname, response]);
+
   function go(next: Step, at: Focus = "top", attended = false) {
     if (at === "top") window.scrollTo(0, 0);
     setFocus(at);
