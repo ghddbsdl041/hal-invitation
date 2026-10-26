@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { isNicknameTaken, NICKNAME_TAKEN } from "@/lib/api";
 import styles from "./Envelope.module.scss";
 
 const NICKNAME_MAX = 20;
@@ -20,7 +21,8 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [nickname, setNickname] = useState<string | null>(null);
   const [naming, setNaming] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const opened = nickname !== null;
 
@@ -50,23 +52,30 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
     };
   }, [nickname, onOpened]);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function reject(message: string) {
+    setError(message);
+    // 다시 눌러도 매번 흔들리도록 CSS 클래스 대신 한 번짜리 애니메이션
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      inputRef.current?.animate(
+        { translate: ["0", "-6px", "6px", "-4px", "4px", "0"] },
+        { duration: 300, easing: "ease-out" },
+      );
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (checking) return;
     // IME 조합 중 maxLength를 넘는 브라우저가 있어 한 번 더 자름
     const value = String(new FormData(e.currentTarget).get("nickname") ?? "")
       .trim()
       .slice(0, NICKNAME_MAX);
-    if (!value) {
-      setError(true);
-      // 비운 채로 다시 눌러도 매번 흔들리도록 CSS 클래스 대신 한 번짜리 애니메이션
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        inputRef.current?.animate(
-          { translate: ["0", "-6px", "6px", "-4px", "4px", "0"] },
-          { duration: 300, easing: "ease-out" },
-        );
-      }
-      return;
-    }
+    if (!value) return reject("받는 분의 이름을 적어 주세요.");
+    // 남의 이름으로 들어오는 장난 방지. 확인에 실패하면(네트워크 등) 막지 않고 회신할 때 DB가 다시 막음
+    setChecking(true);
+    const taken = await isNicknameTaken(value).catch(() => false);
+    setChecking(false);
+    if (taken) return reject(NICKNAME_TAKEN);
     // 이름을 적으면 쪽지가 닫히고 바로 스티커가 떨어지며 봉투가 열림
     setNaming(false);
     setNickname(value);
@@ -113,19 +122,19 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
               placeholder="성함 또는 별명"
               autoComplete="nickname"
               maxLength={NICKNAME_MAX}
-              aria-invalid={error}
+              aria-invalid={error !== null}
               aria-describedby={error ? "nickname-error" : undefined}
-              onChange={() => setError(false)}
+              onChange={() => setError(null)}
             />
             <span aria-hidden="true">님께</span>
           </div>
           {error && (
             <p id="nickname-error" className={styles.error} role="alert">
-              받는 분의 이름을 적어 주세요.
+              {error}
             </p>
           )}
-          <button type="submit" className={styles.button}>
-            봉인 열기
+          <button type="submit" className={styles.button} aria-disabled={checking}>
+            {checking ? "확인 중…" : "봉인 열기"}
           </button>
         </form>
       </dialog>

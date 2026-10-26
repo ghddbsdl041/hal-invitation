@@ -49,11 +49,19 @@ export async function loadMine() {
   };
 }
 
+export const NICKNAME_TAKEN = "이미 다른 분이 회신한 이름입니다. 다른 이름을 적어 주세요.";
+
 export async function submitResponse(nickname: string, status: "attending" | "declined", arrival: ArrivalTime | null) {
   await ensureSession();
-  return check(
-    await supabase().rpc("submit_response", { p_nickname: nickname, p_status: status, p_arrival: arrival }),
-  ) as SavedResponse;
+  const result = await supabase().rpc("submit_response", { p_nickname: nickname, p_status: status, p_arrival: arrival });
+  // 23505: 이름 중복 인덱스(0003)에 걸림. 봉투에서 미리 확인하지만 그 사이 다른 사람이 먼저 쓴 경우
+  if (result.error?.code === "23505") throw new Error(NICKNAME_TAKEN);
+  return check(result) as SavedResponse;
+}
+
+// 봉투에서 이름을 적을 때 미리 확인. 세션이 없어도 됨(내 응답만 제외)
+export async function isNicknameTaken(nickname: string) {
+  return check(await supabase().rpc("nickname_taken", { p_nickname: nickname })) as boolean;
 }
 
 export async function castVote(candidateId: number) {
