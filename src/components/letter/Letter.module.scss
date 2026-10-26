@@ -213,6 +213,76 @@ $wide: 1280px;
   }
 }
 
+// 받는 사람 이름: 요점용 주황 형광펜과 같은 모양(글자 아래쪽 절반)으로, 색만 보라
+.name {
+  background: linear-gradient(rgb(150 110 190 / 45%), rgb(150 110 190 / 45%)) 0 88% / 100% 0.5em no-repeat;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+// 첫 긴 문단의 첫 글자를 크게
+.dropcap::first-letter {
+  float: left;
+  margin: 6px 8px 0 0;
+  font-size: 3.1em;
+  line-height: 1;
+}
+
+// 요점: 글자 아래쪽 절반에 주황 형광펜. 화면에 들어올 때 왼쪽부터 그어짐
+.body mark {
+  color: inherit;
+  background: linear-gradient(rgb(220 93 16 / 45%), rgb(220 93 16 / 45%)) 0 88% / 100% 0.5em no-repeat;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: highlight 0.7s 0.6s ease-out both;
+
+    // 지원 브라우저는 스크롤로 보일 때 긋고, 아니면 편지가 열릴 때 한 번
+    @supports (animation-timeline: view()) {
+      animation: highlight linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 35%;
+    }
+  }
+}
+
+@keyframes highlight {
+  from {
+    background-size: 0 0.5em;
+  }
+}
+
+// 농담: 본문에서 떼어 살짝 기울인 손글씨 메모
+.memo {
+  position: relative;
+  width: fit-content;
+  max-width: 92%;
+  margin: 1.4em auto !important;
+  padding: 8px 16px 8px 40px;
+  font-size: 0.92em;
+  line-height: 1.6;
+  color: var(--color-purple);
+  background: rgb(255 253 248 / 55%);
+  border: 1.5px dashed rgb(116 107 42 / 55%);
+  border-radius: 4px;
+  rotate: -1.5deg;
+  break-inside: avoid;
+
+  &::before {
+    content: "※";
+    position: absolute;
+    top: 8px;
+    left: 14px;
+    color: var(--color-orange);
+  }
+}
+
+// 메모는 번갈아 반대로 기울임
+.memo ~ .memo {
+  rotate: 1.2deg;
+}
+
 .closing {
   margin-top: 2em !important;
 }
