@@ -9,8 +9,9 @@ const DODGE_MS = 3000;
 const TOUCH_WAIT_MS = 1500;
 const DODGE_RADIUS = 90;
 
-// ready: 처음 / dodging: 마우스를 피해 다니는 중 / waiting: 터치·키보드 첫 누름 후 잠시 대기 / armed: 누르면 불참 확정
-type Phase = "ready" | "dodging" | "waiting" | "armed";
+// ready: 처음 / dodging: 마우스를 피해 다니는 중 / escaping: 터치·키보드 첫 누름에 도망쳤다 돌아오는 중
+// waiting: 움직임이 끝나 안내를 띄우고 잠시 대기 / armed: 누르면 불참 확정
+type Phase = "ready" | "dodging" | "escaping" | "waiting" | "armed";
 
 type Props = {
   saved: SavedResponse | null;
@@ -109,11 +110,23 @@ export default function Rsvp({ saved, scrollIntoView = false, onAttend, onDeclin
         setDeclining(false);
       }
     }
-    // 인터랙션 도중에는 응답하지 않음. 터치·키보드·움직임 줄이기는 첫 누름에 안내만 표시
-    else if (phase === "ready") setPhase("waiting");
+    // 인터랙션 도중에는 응답하지 않음. 터치·키보드는 첫 누름에 버튼이 옆으로 도망쳤다 돌아오며 안내 표시
+    else if (phase === "ready") {
+      // 움직임이 끝난 뒤에 안내 문구(waiting). translate 속성이라 마우스 회피용 인라인 transform과 겹치지 않음
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return setPhase("waiting");
+      setPhase("escaping");
+      const toWaiting = () => setPhase("waiting");
+      declineRef.current!.animate(
+        {
+          translate: ["0", "80px", "-60px", "36px", "-16px", "0"],
+          rotate: ["0deg", "10deg", "-8deg", "5deg", "-2deg", "0deg"],
+        },
+        { duration: 900, easing: "ease-out" },
+      ).finished.then(toWaiting, toWaiting);
+    }
   }
 
-  const busy = phase === "dodging" || phase === "waiting" || declining;
+  const busy = phase === "dodging" || phase === "escaping" || phase === "waiting" || declining;
 
   return (
     <div className={styles.rsvp} ref={rootRef}>
