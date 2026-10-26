@@ -16,19 +16,28 @@ type Props = {
 };
 
 export default function Envelope({ savedNickname, onOpened }: Props) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [nickname, setNickname] = useState<string | null>(null);
+  const [naming, setNaming] = useState(false);
   const [error, setError] = useState(false);
-  const [opened, setOpened] = useState(false);
   const [leaving, setLeaving] = useState(false);
+  const opened = nickname !== null;
 
   useEffect(() => {
     // 사용자가 이미 입력하기 시작했으면 덮어쓰지 않음
     if (savedNickname && inputRef.current && !inputRef.current.value) inputRef.current.value = savedNickname;
   }, [savedNickname]);
 
+  // 네이티브 <dialog>.showModal(): 포커스 가두기·Esc 닫기·배경 비활성화를 브라우저가 처리
   useEffect(() => {
-    if (!opened || nickname === null) return;
+    const dialog = dialogRef.current!;
+    if (naming && !dialog.open) dialog.showModal();
+    if (!naming && dialog.open) dialog.close();
+  }, [naming]);
+
+  useEffect(() => {
+    if (nickname === null) return;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
       onOpened(nickname);
       return;
@@ -39,7 +48,7 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
       clearTimeout(fade);
       clearTimeout(done);
     };
-  }, [opened, nickname, onOpened]);
+  }, [nickname, onOpened]);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -58,33 +67,31 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
       }
       return;
     }
+    // 이름을 적으면 쪽지가 닫히고 바로 스티커가 떨어지며 봉투가 열림
+    setNaming(false);
     setNickname(value);
   }
 
-  function open() {
-    setOpened(true);
-  }
-
-  const sealReady = nickname !== null && !opened;
-
   return (
     <section className={styles.scene} data-leaving={leaving}>
+      <h1 className="sr-only">할로윈 저녁 초대장</h1>
       <div className={styles.envelope} data-open={opened}>
-        <Image src="/assets/open-letter-envelope.png" alt="" fill sizes="560px" priority />
+        <Image src="/assets/open-letter-envelope.png" alt="" fill sizes="(min-width: 900px) 720px, 100vw" priority />
         <div className={styles.flapGroup}>
           <Image
             src="/assets/top-letter-envelope.png"
             alt=""
             fill
-            sizes="560px"
+            sizes="(min-width: 900px) 720px, 100vw"
             className={styles.flap}
             priority
           />
+          {/* 안내 문구 없이 스티커만: 살짝 흔들려 누를 곳을 알려 줌 */}
           <button
             type="button"
             className={styles.sticker}
-            onClick={open}
-            disabled={!sealReady}
+            onClick={() => setNaming(true)}
+            disabled={opened}
             aria-label="봉인 열기"
           >
             <Image src="/assets/envelope-sticker.png" alt="" width={338} height={392} priority />
@@ -92,52 +99,36 @@ export default function Envelope({ savedNickname, onOpened }: Props) {
         </div>
       </div>
 
-      {nickname === null ? (
-        // method="dialog": 하이드레이션 전(느린 모바일)에 눌러도 페이지가 새로고침되며 입력이 사라지지 않음
-        <form className={styles.card} method="dialog" onSubmit={handleSubmit} noValidate>
-          <p className={styles.eyebrow}>A HALLOWEEN INVITATION</p>
-          <h1 className={styles.title}>수신인을 확인해 주시겠습니까?</h1>
-          <p className={styles.guide}>이름을 알려주시면 특별한 초대장을 전달해 드리겠습니다.</p>
-          <label htmlFor="nickname" className="sr-only">
-            성함 또는 별명
+      <dialog ref={dialogRef} className={styles.note} onClose={() => setNaming(false)} aria-labelledby="note-to">
+        <form className={styles.noteForm} method="dialog" onSubmit={handleSubmit} noValidate>
+          <label id="note-to" htmlFor="nickname" className={styles.to}>
+            To.<span className="sr-only"> 받는 분 이름</span>
           </label>
-          <input
-            ref={inputRef}
-            id="nickname"
-            name="nickname"
-            className={styles.input}
-            placeholder="성함 또는 별명을 입력해 주세요"
-            autoComplete="nickname"
-            maxLength={NICKNAME_MAX}
-            aria-invalid={error}
-            aria-describedby={error ? "nickname-error" : undefined}
-            onChange={() => setError(false)}
-          />
+          <div className={styles.line}>
+            <input
+              ref={inputRef}
+              id="nickname"
+              name="nickname"
+              className={styles.input}
+              placeholder="성함 또는 별명"
+              autoComplete="nickname"
+              maxLength={NICKNAME_MAX}
+              aria-invalid={error}
+              aria-describedby={error ? "nickname-error" : undefined}
+              onChange={() => setError(false)}
+            />
+            <span aria-hidden="true">님께</span>
+          </div>
           {error && (
             <p id="nickname-error" className={styles.error} role="alert">
-              수신인의 성함을 적어 주셔야 편지를 전해드릴 수 있습니다.
+              받는 분의 이름을 적어 주세요.
             </p>
           )}
           <button type="submit" className={styles.button}>
-            수신인 확인하기
+            봉인 열기
           </button>
         </form>
-      ) : (
-        <div className={styles.card}>
-          <p className={styles.eyebrow}>A HALLOWEEN INVITATION</p>
-          <h1 className={styles.title}>귀하를 위한 봉인이 준비되었습니다.</h1>
-          <p className={styles.guide}>손으로 눌러 열어 주십시오. 마법은 지원하지 않습니다.</p>
-          <button
-            type="button"
-            className={styles.button}
-            onClick={open}
-            disabled={!sealReady}
-            autoFocus
-          >
-            봉인에 손대기
-          </button>
-        </div>
-      )}
+      </dialog>
     </section>
   );
 }

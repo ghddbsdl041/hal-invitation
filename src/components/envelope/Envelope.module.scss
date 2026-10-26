@@ -1,22 +1,14 @@
 .scene {
   min-height: 100dvh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
   padding: 32px 16px;
   transition: opacity 0.4s ease;
 
-  // 봉투 + 카드가 한 덩어리로 화면 높이 안에 들어오도록 봉투 폭(--w)을 높이에 맞춤
-  // 봉투 높이 0.570w = 비율 0.829w - 위 투명 여백 0.128w - 아래 투명 여백 0.131w. 너무 낮은 화면은 300px에서 멈추고 스크롤
-  --card-h: 450px;
-  --w: max(300px, min(100%, 480px, (100dvh - 64px - 12px - var(--card-h)) / 0.570));
-
-  @media (min-width: 900px) {
-    --card-h: 410px;
-    --w: max(300px, min(560px, (100dvh - 64px - 12px - var(--card-h)) / 0.570));
-  }
+  // 봉투만 화면 가운데에 크게. 보이는 봉투 높이 0.570w(이미지 위아래 투명 여백 제외)가 화면 높이 안에 들어오게
+  // 원본 이미지가 549px 폭이라 720px보다 키우면 흐려짐
+  --w: max(280px, min(100%, 720px, (100dvh - 64px) / 0.570));
 
   &[data-leaving="true"] {
     opacity: 0;
@@ -76,6 +68,11 @@
 
   &:enabled {
     cursor: pointer;
+
+    // 누를 곳을 알려 주려고 몇 초마다 살짝 흔들림 (rotate 속성이라 위치용 transform과 겹치지 않음)
+    @media (prefers-reduced-motion: no-preference) {
+      animation: wobble 3s ease-in-out 1s infinite;
+    }
   }
 
   &:enabled:hover {
@@ -93,6 +90,26 @@
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+  }
+}
+
+@keyframes wobble {
+  0%,
+  70%,
+  100% {
+    rotate: 0deg;
+  }
+
+  78% {
+    rotate: 9deg;
+  }
+
+  86% {
+    rotate: -7deg;
+  }
+
+  94% {
+    rotate: 3deg;
   }
 }
 
@@ -115,86 +132,107 @@
   }
 }
 
-// 봉투 이미지 좌우 투명 여백을 뺀 실제 봉투 폭(0.884w, bbox 실측값)에 맞춰 한 덩어리로 보이게
-.card {
-  width: calc(var(--w) * 0.884);
+// 스티커를 누르면 뜨는 이름 쪽지: 봉투 위에 살짝 기울어 놓인 종이
+.note {
+  width: min(100% - 32px, 380px);
+  margin: auto;
+  padding: 0;
+  color: var(--color-ink);
+  background: var(--color-paper);
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 14px 32px rgb(0 0 0 / 40%);
+  rotate: -2deg;
+
+  &::backdrop {
+    background: rgb(20 8 8 / 35%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    &[open] {
+      animation: note-in 0.25s ease-out;
+
+      &::backdrop {
+        animation: backdrop-in 0.25s ease-out;
+      }
+    }
+  }
+}
+
+@keyframes note-in {
+  from {
+    opacity: 0;
+    scale: 0.94;
+    translate: 0 12px;
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.noteForm {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  justify-content: center;
-  padding: 28px 24px;
-  text-align: center;
-  background: var(--color-paper);
-  border-radius: var(--radius);
-  box-shadow: 0 10px 24px rgb(0 0 0 / 30%);
-
-  // 단계마다 카드 높이가 달라져 봉투가 움직이지 않도록 가장 긴 상태(오류 표시) 기준으로 고정
-  // 좁은 화면에서는 오류 문구가 3줄로 늘어남
-  min-height: var(--card-h);
-
-  @media (min-width: 900px) {
-    padding: 36px 32px;
-  }
+  padding: 28px 28px 24px;
 }
 
-.eyebrow {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.25em;
-  color: var(--color-purple);
-}
-
-.title {
+.to {
   font-family: var(--font-display), serif;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.4;
-
-  @media (min-width: 900px) {
-    font-size: 28px;
-  }
-  word-break: keep-all;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--color-orange);
 }
 
-.guide {
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--color-green);
-  word-break: keep-all;
+// 칸 대신 밑줄 한 줄에 이름을 적는 모양
+.line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 20px;
+  border-bottom: 2px solid var(--color-ink);
 }
 
 .input {
-  height: 56px;
-  margin-top: 8px;
-  padding: 0 16px;
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 4px;
   font: inherit;
-  font-size: 18px; // 16px 미만이면 iOS가 입력 시 화면을 확대함
+  font-size: 22px; // 16px 미만이면 iOS가 입력 시 화면을 확대함
   color: var(--color-ink);
-  background: #fffdf8;
-  border: 1px solid var(--color-green);
-  border-radius: var(--radius);
+  background: none;
+  border: none;
+
+  &::placeholder {
+    color: rgb(34 32 35 / 35%);
+  }
 
   &:focus-visible {
-    outline: 2px solid var(--color-purple);
-    outline-offset: 2px;
+    outline: none; // 밑줄이 진해지는 것으로 대신
   }
 }
 
+.line:focus-within {
+  border-bottom-color: var(--color-orange);
+}
+
 .button {
-  height: 56px;
+  align-self: flex-end;
+  height: 48px;
+  margin-top: 6px;
+  padding: 0 24px;
   font: inherit;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--color-paper);
   background: var(--color-purple);
   border: none;
-  border-radius: var(--radius);
+  border-radius: 24px;
   cursor: pointer;
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: default;
-  }
 
   &:focus-visible {
     outline: 2px solid var(--color-ink);
